@@ -1,0 +1,166 @@
+var express = require('express');
+var router = express.Router();
+var _ = require('underscore')
+const hfc = require('fabric-client')
+var CAClient = require('fabric-ca-client')
+var fs = require('fs');
+var config = hfc.loadFromConfig('/tmp/connection_profile.json')
+var crypto = require('crypto')
+var util = require('util')
+/* GET home page. */
+router.get('/', function(req, res, next) {
+  res.render('index', { title: 'Express' });
+});
+
+router.post('/init_client', function (req, res) {
+
+  // if (! fs.existsSync('./connection_profile.json')) {
+  //   // req.network_id
+  //   // req.key
+  //   // req.secret
+  // }
+  var org = Object.keys(config._network_config._network_config.organizations)[0]
+  var certificateAuthorities = config._network_config._network_config.certificateAuthorities
+  var certificateAuthorityName = Object.keys(certificateAuthorities)[0]
+  var certificateAuthObj = certificateAuthorities[certificateAuthorityName]
+  var registrar = config._network_config._network_config.certificateAuthorities[certificateAuthorityName].registrar[0]
+  var mspId = config._network_config._network_config.organizations[org]['mspid']
+  var storePath = '/tmp'
+  var client_crypto_suite = hfc.newCryptoSuite()
+  var crypto_store = hfc.newCryptoKeyStore({path: storePath})
+  var crypto_suite = hfc.newCryptoSuite()
+  // var crypto_store = hfc.newCryptoKeyStore({path: storePath})
+  crypto_suite.setCryptoKeyStore(crypto_store)
+  config.setCryptoSuite(crypto_suite)
+  // config.setCryptoSuite(client_crypto_suite);
+  hfc.newDefaultKeyValueStore({path: storePath}).then( (store) => {
+    config.setStateStore(store)
+  }).then( (result) => {
+    config.getUserContext('admin', true)
+  })
+  res.send("Client Initialized")
+  // channel = config.getChannel()
+});
+
+var chaincodes, peer, channel, marbles_chaincode
+router.post('/getchaincodes', function (req, res) {
+  // console.log(req)
+  // res.send('received chaincode call')
+  peer = config.getPeersForOrgOnChannel()[0]._name
+  channel = config.getChannel()
+  config.queryInstalledChaincodes(peer, true).then( (response) => {
+    chaincodes = response
+  }).then ( (result) =>  {
+    console.log("chaincodes received")
+    chaincode = _.where( chaincodes.chaincodes, {name: 'simple_contract', version: 'v6'} )
+    // console.log(chaincodes)
+    res.sendStatus(200)
+  });
+});
+
+router.post('/chaincode', function (req, res) {
+  console.log("obc request received")
+  console.log(req.body)
+  console.log("args")
+  console.log(req.body.params.ctorMsg.args)
+
+  // var config = hfc.loadFromConfig('/Users/kalonji/projects/blockchain-samples/applications/monitoring_ui/connection_profile.json')
+  // var request = {
+  //   chaincodeId: chaincodes.chaincodes[0].name,
+  //   fcn: 'read_everything',
+  //   args: []
+  // }
+
+  if (req.body.method && req.body.method === 'invoke') {
+    console.log("Chaincode invocation requested, generating proposal")
+    var transaction_id = config.newTransactionID(true)
+    var reqArgs = JSON.parse(req.body.params.ctorMsg.args)
+    if (req.body.params.ctorMsg.function == 'deleteAsset') {
+      console.log('deleting asset: ' + JSON.parse(req.body.params.ctorMsg.args).assetID)
+      var createMarbleRequest = {
+        chaincodeId: chaincode.name,
+        txId: transaction_id,
+        fcn: req.body.params.ctorMsg.function,
+        args: [JSON.parse(req.body.params.ctorMsg.args).assetID, 'Company A']
+      }
+    } else if ( req.body.params.ctorMsg.function == 'createAsset' ) {
+      var assetId = JSON.parse(req.body.params.ctorMsg.args).assetID || 'm015250404' + crypto.randomBytes(5).toString('hex')
+      console.log("creating asset: " + randomId)
+      var createMarbleRequest = {
+        chaincodeId: assetId,
+        txId: transaction_id,
+        fcn: req.body.params.ctorMsg.function,
+        args: [
+          assetId,
+          reqArgs.color,
+          String(reqArgs.size),
+          reqArgs.owner,
+          'Company A'
+        ]
+      }
+    }
+
+    console.log('createMarbleRequest')
+    console.log(createMarbleRequest)
+    channel.sendTransactionProposal(createMarbleRequest).then ( (proposalRes) => {
+      console.log("sending transaction proposal")
+      var proposalResponses = proposalRes[0];
+      var proposal = proposalRes[1];
+      let isProposalGood = false;
+      console.log("proposalResponses")
+      console.log(proposalResponses)
+      if (proposalResponses && proposalResponses[0].response && proposalResponses[0].response.status === 200) {
+          isProposalGood = true;
+          console.log('Transaction proposal was good');
+        } else {
+          console.error('Transaction proposal was bad');
+        }
+      if (isProposalGood) {
+        console.log(util.format('Successfully sent Proposal and received ProposalResponse: Status - %s, message - "%s"', proposalResponses[0].response.status, proposalResponses[0].response.message));
+        var promises = []
+        var sendPromise = channel.sendTransaction({
+          proposalResponses: proposalResponses,
+          proposal: proposal
+        })
+        sendPromise.then( (result) => {
+          console.log("transaction result")
+          console.log(result)
+          res.send(result)
+        })
+      }
+    }).catch ( (err) => {
+      console.log(err)
+      res.send(err)
+    });
+  } else { // query
+    var assetId = JSON.parse(req.body.params.ctorMsg.args).assetID
+    if ( assetId == "all") {
+      var request = {
+        chaincodeId: marbles_chaincode.name,
+        fcn: 'read_everything',
+        args: []
+      }
+    } else {
+      var request = {
+        chaincodeId: marbles_chaincode.name,
+        fcn: 'read',
+        args: [assetId] //['m01525040469544iCNY5']
+      }
+    }
+    channel.queryByChaincode(request).then( (cc_response) => {
+      // console.log(cc_response[0].toString())
+      res.send( cc_response[0].toString() )
+    }).catch ( (err) => {
+      res.send(err)
+    });
+  }
+
+   //else if ( req.body.method && req.body.method) === 'query' {
+  //   console.log("Chaincode query requested")
+  // }
+  // console.log("req.body.params.ctorMsg.args")
+  // console.log(req.body.params.ctorMsg.args)
+
+});
+
+module.exports = router;

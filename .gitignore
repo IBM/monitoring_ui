@@ -1,0 +1,5 @@
+react_backend/node_modules
+node_modules
+public/bundle.js
+npm-debug.log
+updates.js

@@ -1,0 +1,6 @@
+applications:
+- name: blockchain-monitor
+  path: .
+  timeout: 180
+  command: npm run dev-server
+  memory: 128M
