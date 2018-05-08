@@ -1,93 +1,319 @@
-Blockchain Monitoring UI
-=========================
-The Blockchain Monitoring UI is a dynamically generated user interface for IBM Watson IoT Platform blockchain integration. Use the Monitoring UI to perform actions on the blockchain, see the results of those actions, and monitor the state of your assets in the blockchain ledger.
+<!--Put badges at the very top -->
+<!--change the repos -->
+<!--change the tracking number -->
+[![Build Status](https://travis-ci.org/IBM/watson-banking-chatbot.svg?branch=master)](https://travis-ci.org/IBM/watson-banking-chatbot)
+![IBM Cloud Deployments](https://metrics-tracker.mybluemix.net/stats/527357940ca5e1027fbf945add3b15c4/badge.svg)
+<!--Add a new Title and fill in the blanks -->
+# Blockchain Monitoring UI
+In this Code Pattern, we'll use React.js, Hyperledger Fabric SDK, Watson IoT Platform, and IBM Blockchain to monitor assets as they traverse through a supply chain. This project provides a dynamically generated user interface for IBM Watson IoT Platform blockchain integration. Operators can use this Monitoring UI to perform actions on the blockchain, see the results of those actions, and monitor the state of your assets in the blockchain ledger.
 
-## Requirements
-* Node installed locally on your machine.  
-You can install it from https://nodejs.org/.  
-* An IBM Blockchain or Hyperledger peer with an accessible REST Endpoint.  
-For more information, see: https://ibmblockchain-starter.ng.bluemix.net/api-docs.
-* A deployed contract on the blockchain peer network. We have included a sample contract in the [contracts/basic/simple_contract](contracts/basic/simple_contract) directory, which can be created with the name "simple_contract" and "v1".
+When the reader has completed this Code Pattern, they will understand how to:
 
-## Downloading
+* Create a chaincode schema defining an asset and its properties
+* Deploy a smart contract to handle asset updates/queries
+* Monitor and propose blockchain transactions via a UI
+* Integrate Watson IoT platform to directly receive asset updates via MQTT or HTTP
 
-Use `git clone` in the console to clone the following project:  
-https://github.com/ibm-watson-iot/blockchain-samples  
+<!--Remember to dump an image in this path-->
+![](doc/source/images/architecture.png)
 
-The monitoring UI component is in the monitoring_ui folder. You can also download a compressed file of the project by clicking **Download ZIP** from the project page.  
+## Flow
+<!--Add new flow steps based on the architecture diagram-->
+1. Upload and Instantiate smart contracts via the Bluemix Network Monitor
+2. Deploy the node application locally or on bluemix
+3. Input connection information such as service credentials, endpoint, etc into configuration form
+4. Submitting form sends a request to pull a json file containing the connection profile. The information from this profile is used to create a "monitoring" client with administrative privileges
+5. If form data is valid, user should be able to execute Chaincode operations, view individual blocks and their data, and request state of registered Assets
 
-## Installing
-To install the Monitoring UI on your local workstation, run the following command in the root directory of this project and in the `react-backend` directory:
+<!--Update this section-->
+## Included components
+* [Blockchain](https://console.bluemix.net/catalog/services/blockchain)
+* [Watson IoT Platform](https://console.bluemix.net/catalog/services/internet-of-things-platform)
+
+<!--Update this section-->
+## Featured technologies
+<!-- Select components from [here](https://github.ibm.com/developer-journeys/journey-docs/tree/master/_content/dev#technologies), copy and paste the raw text for ease -->
+* [Hyperledger Fabric](https://hyperledger-fabric.readthedocs.io/en/release-1.1/)
+* [MQTT](http://mqtt.org/faq)
+
+
+
+<!--Update this section when the video is created-->
+# Watch the Video
+<!-- [![](http://img.youtube.com/vi/Jxi7U7VOMYg/0.jpg)](https://www.youtube.com/watch?v=Jxi7U7VOMYg) -->
+In progress
+
+https://www.youtube.com/watch?v=DYvdN_p_Ldk
+
+https://www.youtube.com/watch?v=Mw6924hCAIc
+
+
+# Steps
+Use the ``Deploy to IBM Cloud`` button **OR** create the services and run locally.
+
+## Deploy to IBM Cloud
+<!--Update the repo and tracking id-->
+TODO, In progress
+[![Deploy to IBM Cloud](https://metrics-tracker.mybluemix.net/stats/527357940ca5e1027fbf945add3b15c4/button.svg)](https://bluemix.net/deploy?repository=https://github.com/IBM/watson-banking-chatbot.git)
+
+1. Press the above ``Deploy to IBM Cloud`` button and then click on ``Deploy``.
+
+<!--optional step-->
+2. In Toolchains, click on Delivery Pipeline to watch while the app is deployed. Once deployed, the app can be viewed by clicking 'View app'.
+![](doc/source/images/toolchain-pipeline.png)
+
+<!--update with service names from manifest.yml-->
+3. To see the app and services created and configured for this Code Pattern, use the IBM Cloud dashboard. The app is named `watson-banking-chatbot` with a unique suffix. The following services are created and easily identified by the `wbc-` prefix:
+    * wbc-conversation-service
+    * wbc-discovery-service
+    * wbc-natural-language-understanding-service
+    * wbc-tone-analyzer-service
+
+## Run locally
+> NOTE: These steps are only needed when running locally instead of using the ``Deploy to IBM Cloud`` button.
+
+<!-- there are MANY updates necessary here, just screenshots where appropriate -->
+
+TODO, correct steps
+1. [Clone the repo](#1-clone-the-repo)
+2. [Create Watson services with IBM Cloud](#2-create-watson-services-with-ibm-cloud)
+3. [Import the Conversation workspace](#3-import-the-conversation-workspace)
+4. [Load the Discovery documents](#4-load-the-discovery-documents)
+5. [Configure credentials](#5-configure-credentials)
+5. [Run the application](#6-run-the-application)
+
+### 1. Clone the repo
+
+Clone the `monitoring_ui` project locally. In a terminal, run:
+
+```
+$ git clone github.com/IBM/monitoring_ui
+```
+
+### 2. Create Watson services with IBM Cloud
+
+Provision the following services:
+* [**IBM Blockchain**](https://console.bluemix.net/catalog/services/blockchain)
+* [**Watson IoT Platform**](https://console.bluemix.net/catalog/services/internet-of-things-platform)
+
+### 3. Upload / Instantiate Chaincode
+The smart contracts, commonly referred to as "Chaincode", can be used to execute business logic and handle
+
+In this context, the contracts are used to implement CRUD operations for tracking device data on the IBM Blockchain ledger.
+
+To begin the process of uploading the smart contracts, we can start by opening the Bluemix UI, selecting your provisioned Blockchain service, and accessing the blockchain network monitor by clicking "Enter Monitor"
+<img src="https://i.imgur.com/J2pbo7H.png"  data-canonical-src="https://i.imgur.com/J2pbo7H.png" width="650" height="450" style="margin-left: auto; margin-right: auto;">
+
+
+Next, click the "Install code" option on the left hand menu, and then the "Install Chaincode" button to the right of the page
+<img src="https://i.imgur.com/HmdDsgm.png"  data-canonical-src="https://i.imgur.com/HmdDsgm.png" width="650" height="450" style="margin-left: auto; margin-right: auto;">
+
+
+Enter an id ("simple_contract") and a version ("v1"). Also, click the "Add Files" button to upload the each of the [samples.go](contracts/basic/simple_contract/samples.go), [schemas.go](contracts/basic/simple_contract/schemas.go), and [simple_contract_hyperledger.go](contracts/basic/simple_contract/simple_contract_hyperledger.go) files
+
+<img src="https://i.imgur.com/nYwMM47.png"  data-canonical-src="https://i.imgur.com/nYwMM47.png" width="450" height="450" style="margin-left: auto; margin-right: auto;">
+
+Finally, we'll need to Instantiate the chaincode. This can be done by opening the chaincode options menu and selecting "Instantiate"
+
+This will present a form where arguments can be provided to the chaincodes `init` function. In this case, we'll just need to provide a json string `{"version":"1.0"}` in the Arguments section, and then click "Submit"
+<img src="https://i.imgur.com/blo1Qx3.png"  data-canonical-src="https://i.imgur.com/blo1Qx3.png" width="450" height="450" style="margin-left: auto; margin-right: auto;">
+
+For additional documentation on the chaincode implementation, please see the [simple_contract](contracts/basic/simple_contract) directory
+
+### 3. Install/Build dependencies
+
+Install [Node.js](https://nodejs.org/en/) runtime and NPM. Currently the hyperledger fabric-sdk does not work with node v9.0+. If your system requires newer versions of node for other projects, we'd suggest using [nvm](https://github.com/creationix/nvm) to easily switch between node versions. We did so with the command
+```
+nvm install v8.9.0
+nvm use 8.9.0
+```
+
+To install the Monitoring UI on your local workstation, run `npm install` in the root directory of this project and in the [react-backend](react-backend) directory:
 ```
 npm install
+cd react-backend && npm install
 ```
 
-## Running
-You can run the monitoring UI directly from the file system or by running the webpack-dev-server.
-
-Method	| Command	|Comment
+Next, compile the required `bundle.js` file in the public directory like so
+`npm run build`
+<!-- Method	| Command	|Comment
 --- | --- | ---
-Filesystem | `npm run build` | The build command generates the bundle.js file in the public directory. </br>To access the Monitoring UI, go to the `monitoring_ui/public` directory and open the *index.html* file in a browser.
-webpack-dev-server | `npm run dev-server` | This method is ideal for a development environment but not suitable for a production environment. </br>To access the Monitoring UI, open the following URL in a browser: `http://localhost:8081/` </br>**Note:** If you run into an issue with the port already being used, set the `PORT` environment variable to the port you'd like to use. Note that hot reload is enabled for the webpack-dev-server. Changes that you save to the source are immediately reflected in the Monitoring UI. There is no need to manually reload.
+Filesystem | `npm run build` | The build command generates the bundle.js file in the public directory. </br>To access the Monitoring UI, go to the `monitoring_ui/public` directory and open the *index.html* file in a browser. -->
 
-## Configuration
+<!-- Launch the **Watson Conversation** tool. Use the **import** icon button on the right
+
+Find the local version of [`data/conversation/workspaces/banking.json`](data/conversation/workspaces/banking.json) and select
+**Import**. Find the **Workspace ID** by clicking on the context menu of the new
+workspace and select **View details**. Save this ID for later.
+
+*Optionally*, to view the conversation dialog select the workspace and choose the
+**Dialog** tab, here's a snippet of the dialog: -->
+
+![](doc/source/images/dialog.PNG)
+
+### 4. Run the application
+
+1. Start the app locally with `npm run dev-server`.
+
+This method is ideal for a development environment but not suitable for a production environment.
+
+2. To access the Monitoring UI, open the following URL in a browser: `http://localhost:8081/` </br>**Note:** If you run into an issue with the port already being used, set the `PORT` environment variable to the port you'd like to use. Note that hot reload is enabled for the webpack-dev-server. Changes that you save to the source are immediately reflected in the Monitoring UI. There is no need to manually reload.
+> Note: server host can be changed as required in server.js and `PORT` can be set in `.env`.
+
+<!--Add a section that explains to the reader what typical output looks like, include screenshots -->
+
+# Sample output
+
+![](doc/source/images/sample_output.png)
+
+<!--Include any troubleshooting tips (driver issues, etc)-->
+
+### 5. Configure credentials
+
+The credentials for IBM Cloud services (Blockchain, Watson IoT Platform), can be found in the ``Services`` menu in IBM Cloud,
+by selecting the ``Service Credentials`` option for each service.
+
+The Blockchain credentials consist of a `key`, `secret`, and `network_id` parameter like so
+<!-- ![]("https://i.imgur.com/Qof7sve.png" width="250" height="400") -->
+<img src="https://i.imgur.com/Qof7sve.png"  data-canonical-src="https://i.imgur.com/Qof7sve.png" width="450" height="450" style="margin-left: auto; margin-right: auto;">
+
+
+These credentials will need to be provided to the UI in the next step
+<!-- We can obtain the Blockchain credentials by downloading
+
+Copy the [`env.sample`](env.sample) to `.env`.
+
+```
+$ cp env.sample .env
+```
+Edit the `.env` file with the necessary settings.
+
+#### `env.sample:`
+
+```
+# Replace the credentials here with your own.
+# Rename this file to .env before starting the app.
+
+# Watson conversation
+CONVERSATION_USERNAME=<add_conversation_username>
+CONVERSATION_PASSWORD=<add_conversation_password>
+WORKSPACE_ID=<add_conversation_workspace>
+
+# Watson Discovery
+DISCOVERY_USERNAME=<add_discovery_username>
+DISCOVERY_PASSWORD=<add_discovery_password>
+DISCOVERY_ENVIRONMENT_ID=<add_discovery_environment>
+DISCOVERY_COLLECTION_ID=<add_discovery_collection>
+
+# Watson Natural Language Understanding
+NATURAL_LANGUAGE_UNDERSTANDING_USERNAME=<add_nlu_username>
+NATURAL_LANGUAGE_UNDERSTANDING_PASSWORD=<add_nlu_password>
+
+# Watson Tone Analyzer
+TONE_ANALYZER_USERNAME=<add_tone_analyzer_username>
+TONE_ANALYZER_PASSWORD=<add_tone_analyzer_password>
+
+# Run locally on a non-default port (default is 3000)
+# PORT=3000
+
+``` -->
+
+### 6. UI Configuration
+
 Before you can access the blockchain information with the Monitoring UI, you must point it to a blockchain peer server and provide a contract ID to monitor. Access the configuration by clicking **CONFIGURATION**.  
-You can configure the following parameters:
+
+<img src="https://i.imgur.com/pS3s5vg.png" width="650" height="450" style="margin-left: auto; margin-right: auto;">
+
+You can enter the following parameters:
 
 Parameter	|Value	|Comment
 --- | --- | ---
 API Host and Port	| http://peer_URL:port	| The host and port for the IBM Blockchain REST API prepended with `http://`.
 Chaincode ID	| The contract ID that was returned when you registered the contract.	| The contract ID is a 128-character alphanumeric hash that corresponds to the Contract ID entry. </br> **Important:** As you cut-and-paste the contract ID, make sure that no spaces are included in the ID. If the ID is incorrectly entered, the UI will display the blockchain ledger entries, but the asset search function will not work.
-Secure Context|Your fabric user	| This is required for connecting to IBM Blockchain instances on Bluemix. </br>**Important:** For secureContext use the user name that was used to configure the fabric.
+Secure Context|Your fabric user	| This is required for connecting to IBM Blockchain instances on Bluemix. </br>
+**Important:** For secureContext use the user name that was used to configure the fabric.
 Number of blocks to display	| A positive integer. Default: 10	| The number of blockchain blocks to display.
-Key | API Key |
-Secret | API Secret |
-Network Id | |
+<!-- Key | API Key | This is the Hyperledger API key that can be found in the Bluemix console credentials
+Secret | API Secret | This is the Hyperledger API secret that can be found in the Bluemix console credentials
+Network Id |  | -->
 
-**Important** 
-After submitting the "Configuration" form, a request will be sent to the `/init_client` endpoint with the provided parameters. This will fetch the network configuration file and create/enroll a user named "monitoring_user". Once this is complete, a PEM encoded Certificate will be output to the server logs. This certificate will need to be manually uploaded via the blockchain service UI, which can be found at the following url https://ibmblockchain-starter.ng.bluemix.net/network/<network_id>/members/certificates. 
-The chaincode operations will not work until this step has been completed
+**Important** After submitting the form, a request will be sent to the `/init_client` endpoint with the provided parameters. This will fetch the network configuration file and create/enroll a fabric user named "monitoring_user". Once this is complete, a PEM encoded Certificate will be output to the server logs like so.
 
-## Exploring the Monitoring UI Features
-Use the Monitoring UI single page application to perform actions on the blockchain, see the results of those actions, and monitor the state of the blockchain ledger.   
+<img src="https://i.imgur.com/i1NLzVf.png" width="650" height="450" style="margin-left: auto; margin-right: auto;">
 
-The user interface is divided into three columns.  
-1. Chaincode Operations
-2. Response Payloads
-3. Blockchain
+This certificate will need to be manually uploaded via the blockchain service UI. The chaincode operations will not work until this step has been completed.
 
-### The Chaincode Operations column
-The first section of the Monitoring UI is dynamically generated through a combination of JSON Schema and convention. The tabs each represent a subset of the available contract functions and are hardcoded in the `ChaincodeReducer.js` file.     
+This can be done by going back to the Bluemix UI, selecting your provisioned Blockchain service, and accessing the blockchain network monitor by clicking "Enter Monitor"
+<img src="https://i.imgur.com/J2pbo7H.png" width="650" height="450" style="margin-left: auto; margin-right: auto;">
 
-The contract functions can be selected from the menu in each tab. The functions and their related input fields are defined in the JSON schema.
+After entering the Network Monitor, select the "Members" section from the left hand menu. Then, select the "Certificate" option, and click "Add certificate"
+<img src="https://i.imgur.com/cKZthHB.png" width="650" height="450" style="margin-left: auto; margin-right: auto;">
 
-For example, if we are connected to the IBM sample conctract on the blockchain fabric the **Create** tab includes just one function: `createAsset`. This function maps to the `createAsset` function that is defined in the JSON schema. The UI knows to put `createAsset` under the `create` tab because it matches the tab's name as a substring of the function. The **Read** tab, in contrast, contains three functions each of which are defined in the JSON schema. Each tab also has a corresponding `type`, which controls the use of Hyperledger invoke or query endpoint.
-
-The *arguments* form is generated when you select a particular function. The form creates input fields for the arguments that are defined in the JSON schema. The basic contract includes the following fields: `assetID`, `carrier`, `location`, `temperature`, and `timestamp`.  
-
-**Note:**
-- Fields such as `assetID` that are denoted with asterisk are required. Required fields are defined in the JSON schema.
-- Location is a nested object with its own properties that in turn are exposed as data fields.
-- Validation is defined in the JSON schema and is reflected in the form.  
-For example, if you submit the form without an entry for the required `assetID` field, you are prompted to enter a value. If you enter a non-numeric value in the `latitude` or `longitude` fields, you will also be prompted.
-
-When you submit a form the Monitoring UI creates a valid blockchain REST payload with the field input as arguments. The payload and a request is sent to the configured blockchain peer. The Monitoring UI then waits for a response from the peer. The response is displayed in the Request Payload column.
-
-### The Response Payload column
-The second column displays the response from the blockchain peer by recursively traversing the payload and writing the responses to the card. If you submit multiple requests from a combination of tabs the Monitoring UI generates cards as needed to display the payload. **Note:** Duplicate REST request with the exact same function and arguments will not create extra cards.
-
-Request payload cards are displayed in the collapsed state. You must expand the cards to view the contents of the card.
-
-Close individual cards by clicking **x** next to the card header.
-
-Click **Clear** on the Request Payload header to remove all payloads from the display.
-
-**Tip:** Enable the **Poll for changes** toggle to have the Monitoring UI actively check for changes to a particular query every time the blockchain height changes. For the basic contract, use this feature to monitoring a particular asset for changes.
+Clicking "Add certificate" will present the following form
+<img src="https://i.imgur.com/cD125af.png" width="650" height="450" style="margin-left: auto; margin-right: auto;">
 
 
-### The Blockchain column
-The third column shows the current state of the blockchain.
+# Troubleshooting
 
-To expand a block, click the expander. The contents of the block show the transactions in the block and the details for each transaction.
+* Error: Environment {GUID} is still not active, retry once status is active
 
-**Important:** Any transactions that occur against a specific blockchain will appear within blocks on the blockchain. These include invalid transactions as well as transactions against other contracts. To see a change on a specific contract, the Monitoring UI must be configured to connect to that contract.
+  > This is common during the first run. The app tries to start before the Discovery
+environment is fully created. Allow a minute or two to pass. The environment should
+be usable on restart. If you used `Deploy to IBM Cloud` the restart should be automatic.
+
+* Error: Only one free environment is allowed per organization
+
+  > To work with a free trial, a small free Discovery environment is created. If you already have
+a Discovery environment, this will fail. If you are not using Discovery, check for an old
+service thay you may want to delete. Otherwise use the .env DISCOVERY_ENVIRONMENT_ID to tell
+the app which environment you want it to use. A collection will be created in this environment
+using the default configuration.
+
+<!--This can stay as-is if using Deploy to IBM Cloud-->
+
+# Privacy Notice
+If using the `Deploy to IBM Cloud` button some metrics are tracked, the following
+information is sent to a [Deployment Tracker](https://github.com/IBM/cf-deployment-tracker-service) service
+on each deployment:
+
+* Node.js package version
+* Node.js repository URL
+* Application Name (`application_name`)
+* Application GUID (`application_id`)
+* Application instance index number (`instance_index`)
+* Space ID (`space_id`)
+* Application Version (`application_version`)
+* Application URIs (`application_uris`)
+* Labels of bound services
+* Number of instances for each bound service and associated plan information
+
+This data is collected from the `package.json` file in the sample application and the `VCAP_APPLICATION` and `VCAP_SERVICES` environment variables in IBM Cloud and other Cloud Foundry platforms. This data is used by IBM to track metrics around deployments of sample applications to IBM Cloud to measure the usefulness of our examples, so that we can continuously improve the content we offer to you. Only deployments of sample applications that include code to ping the Deployment Tracker service will be tracked.
+
+## Disabling Deployment Tracking
+
+To disable tracking, simply remove ``require("cf-deployment-tracker-client").track();`` from the ``app.js`` file in the top level directory.
+
+<!--Include any relevant links-->
+
+# Links
+* [Demo on Youtube](https://www.youtube.com/watch?v=Jxi7U7VOMYg)
+* [Watson Node.js SDK](https://github.com/watson-developer-cloud/node-sdk)
+* [Relevancy Training Demo Video](https://www.youtube.com/watch?v=8BiuQKPQZJk)
+* [Relevancy Training Demo Notebook](https://github.com/akmnua/relevancy_passage_bww)
+
+<!-- pick the relevant ones from below -->
+# Learn more
+
+* **Artificial Intelligence Code Patterns**: Enjoyed this Code Pattern? Check out our other [AI Code Patterns](https://developer.ibm.com/code/technologies/artificial-intelligence/).
+* **Data Analytics Code Patterns**: Enjoyed this Code Pattern? Check out our other [Data Analytics Code Patterns](https://developer.ibm.com/code/technologies/data-science/)
+* **AI and Data Code Pattern Playlist**: Bookmark our [playlist](https://www.youtube.com/playlist?list=PLzUbsvIyrNfknNewObx5N7uGZ5FKH0Fde) with all of our Code Pattern videos
+* **With Watson**: Want to take your Watson app to the next level? Looking to utilize Watson Brand assets? [Join the With Watson program](https://www.ibm.com/watson/with-watson/) to leverage exclusive brand, marketing, and tech resources to amplify and accelerate your Watson embedded commercial solution.
+* **Data Science Experience**: Master the art of data science with IBM's [Data Science Experience](https://datascience.ibm.com/)
+* **PowerAI**: Get started or get scaling, faster, with a software distribution for machine learning running on the Enterprise Platform for AI: [IBM Power Systems](https://www.ibm.com/ms-en/marketplace/deep-learning-platform)
+* **Spark on IBM Cloud**: Need a Spark cluster? Create up to 30 Spark executors on IBM Cloud with our [Spark service](https://console.bluemix.net/catalog/services/apache-spark)
+* **Kubernetes on IBM Cloud**: Deliver your apps with the combined the power of [Kubernetes and Docker on IBM Cloud](https://www.ibm.com/cloud-computing/bluemix/containers)
+
+<!--keep this-->
+
+# License
+[Apache 2.0](LICENSE)

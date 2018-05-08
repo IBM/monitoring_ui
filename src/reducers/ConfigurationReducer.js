@@ -80,8 +80,7 @@ export const configuration = (state={
           body: JSON.stringify(params)
       }
       console.log("updating client")
-      fetch('http://localhost:3001/init_client', config)
-      fetch('http://localhost:3001/getchaincodes', config)
+      fetch('http://localhost:3001/init_client', config).then( (res) => { fetch('http://localhost:3001/getchaincodes', config) } )
       return Object.assign({}, state, params)
 
     /**

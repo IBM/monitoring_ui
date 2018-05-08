@@ -3,3 +3,7 @@ node_modules
 public/bundle.js
 npm-debug.log
 updates.js
+monitoring_admin
+connection_profile.json
+*-pub
+*-priv
