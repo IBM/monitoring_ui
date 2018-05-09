@@ -15,7 +15,10 @@ When the reader has completed this Code Pattern, they will understand how to:
 * Integrate Watson IoT platform to directly receive asset updates via MQTT or HTTP from registered IoT devices
 
 <!--Remember to dump an image in this path-->
-![](doc/source/images/architecture.png)
+<p align="center">
+<!-- <img src="https://i.imgur.com/lNZxVxo.png"  data-canonical-src="https://i.imgur.com/lNZxVxo.png" width="650" height="450" style="margin-left: auto; margin-right: auto;"> -->
+<img src="/images/architecture.png"  />
+</p>
 
 ## Flow
 <!--Add new flow steps based on the architecture diagram-->
@@ -139,7 +142,7 @@ npm install
 cd react-backend && npm install
 ```
 
-Next, compile the required `bundle.js` file in the public directory like so
+Next, compile the required `bundle.js` file in the public directory with the command
 `npm run build`
 <!-- Method	| Command	|Comment
 --- | --- | ---
@@ -232,7 +235,7 @@ Before you can access the blockchain information with the Monitoring UI, you mus
 <img src="https://i.imgur.com/pS3s5vg.png" width="650" height="450" style="margin-left: auto; margin-right: auto;">
 </p>
 
-You can enter the following parameters:
+This form accepts the following parameters:
 
 Parameter	|Value	|Comment
 --- | --- | ---
@@ -248,7 +251,7 @@ Network Id |  | -->
 **Important** After submitting the form, a request will be sent to the `/init_client` endpoint with the provided parameters. This will fetch the network configuration file and create/enroll a fabric user named "monitoring_user". Once this is complete, a PEM encoded Certificate will be output to the server logs like so.
 
 <p align="center">
-<img src="https://i.imgur.com/i1NLzVf.png" width="650" height="450" style="margin-left: auto; margin-right: auto;">
+<img src="https://i.imgur.com/i1NLzVf.png" width="350" height="350" style="margin-left: auto; margin-right: auto;">
 </p>
 
 This certificate will need to be manually uploaded via the blockchain service UI. The chaincode operations will not work until this step has been completed.
@@ -313,7 +316,7 @@ To disable tracking, simply remove ``require("cf-deployment-tracker-client").tra
 # Links
 Blockchain Supply Chain articles
 https://aqurus.ca/blockchain-crucial-link-supply-chain/
-
+https://medium.com/scandinavian-cryptocurrency-exchange/how-blockchain-technology-can-optimize-product-supply-chains-53164a11a1ba
 
 <!-- * [Demo on Youtube](https://www.youtube.com/watch?v=Jxi7U7VOMYg) -->
 * [Hyperledger Node.js SDK](https://github.com/hyperledger/fabric-sdk-node)
