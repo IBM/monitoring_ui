@@ -96,7 +96,7 @@ TODO, In progress
 1. Press the above ``Deploy to IBM Cloud`` button and then click on ``Deploy``.
 
 <!--optional step-->
-2. In Toolchains, click on Delivery Pipeline to watch while the app is deployed. Once deployed, the app can be viewed by clicking 'View app'.
+2. In Toolchains, click on ``Delivery Pipeline`` to watch while the app is deployed. Once deployed, the app can be viewed by clicking ``View app``.
 ![](doc/source/images/toolchain-pipeline.png)
 
 <!--update with service names from manifest.yml-->
@@ -134,25 +134,25 @@ The smart contracts, commonly referred to as "Chaincode", can be used to execute
 
 In this context, the contracts are used to implement CRUD operations for tracking assets on the IBM Blockchain ledger.
 
-To begin the process of uploading the smart contracts, we can start by opening the Bluemix UI, selecting your provisioned Blockchain service, and accessing the blockchain network monitor by clicking "Enter Monitor"
+To begin the process of uploading the smart contracts, we can start by opening the Bluemix UI, selecting your provisioned Blockchain service, and accessing the blockchain network monitor by clicking ``Enter Monitor``
 <p align="center">
 <img src="https://i.imgur.com/J2pbo7H.png"  data-canonical-src="https://i.imgur.com/J2pbo7H.png" width="650" height="450" style="margin-left: auto; margin-right: auto;">
 </p>
 
-Next, click the "Install code" option on the left hand menu, and then the "Install Chaincode" button on the right of the page
+Next, click the ``Install code`` option on the left hand menu, and then the ``Install Chaincode`` button on the right of the page
 <p align="center">
 <img src="https://i.imgur.com/HmdDsgm.png"  data-canonical-src="https://i.imgur.com/HmdDsgm.png" width="650" height="450" style="margin-left: auto; margin-right: auto;">
 </p>
 
-Enter an id ("simple_contract") and a version ("v1"). Then, select the "Add Files" button to upload the [samples.go](contracts/basic/simple_contract/samples.go), [schemas.go](contracts/basic/simple_contract/schemas.go), and [simple_contract_hyperledger.go](contracts/basic/simple_contract/simple_contract_hyperledger.go) files
+Enter an id ("simple_contract") and a version ("v1"). Then, select the ``Add Files`` button to upload the [samples.go](contracts/basic/simple_contract/samples.go), [schemas.go](contracts/basic/simple_contract/schemas.go), and [simple_contract_hyperledger.go](contracts/basic/simple_contract/simple_contract_hyperledger.go) files
 
 <p align="center">
 <img src="https://i.imgur.com/nYwMM47.png"  data-canonical-src="https://i.imgur.com/nYwMM47.png" width="650" height="450" style="margin-left: auto; margin-right: auto;">
 </p>
 
-Finally, we'll need to Instantiate the chaincode. This can be done by opening the chaincode options menu and selecting "Instantiate"
+Finally, we'll need to Instantiate the chaincode. This can be done by opening the chaincode options menu and selecting ``Instantiate``
 
-This will present a form where arguments can be provided to the chaincodes `init` function. In this case, we'll just need to provide a json string `{"version":"1.0"}` in the Arguments section, and then click "Submit"
+This will present a form where arguments can be provided to the chaincodes `init` function. In this case, we'll just need to provide a json string `{"version":"1.0"}` in the Arguments section, and then click ``Submit``
 <p align="center">
 <img src="https://i.imgur.com/blo1Qx3.png"  data-canonical-src="https://i.imgur.com/blo1Qx3.png" width="450" height="450" style="margin-left: auto; margin-right: auto;">
 </p>
@@ -205,7 +205,7 @@ workspace and select **View details**. Save this ID for later.
 This method is ideal for a development environment but not suitable for a production environment.
 
 2. To access the Monitoring UI, open the following URL in a browser: `http://localhost:8081/` </br>**Note:** If you run into an issue with the port already being used, set the `PORT` environment variable to the port you'd like to use. Note that hot reload is enabled for the webpack-dev-server. Changes that you save to the source are immediately reflected in the Monitoring UI. There is no need to manually reload.
-> Note: server host can be changed as required in server.js and `PORT` can be set in `.env`.
+> Note: server host can be changed as required in server.js and PORT can be set in `.env`.
 
 <!--Add a section that explains to the reader what typical output looks like, include screenshots -->
 
