@@ -27,9 +27,7 @@ When the reader has completed this Code Pattern, they will understand how to:
 3. Input connection information such as service credentials, endpoint, etc into configuration form
 4. Submitting form sends a request to pull a json file containing the connection profile. The information from this profile is used to create a "monitoring" client with administrative privileges
 5. If form data is valid, user should be able to execute Chaincode operations, view individual blocks and their data, and request state of registered Assets -->
-1. User submits CRUD request through monitoring_ui
-   OR
-   IoT Device scans Asset (barcode, NFC) and publishes "update" message to Watson IoT Platform
+1. User submits CRUD request through monitoring_ui **OR** IoT Device scans Asset (barcode, NFC) and publishes "update" message to Watson IoT Platform
 
 2. Node Express backend receives request from user or from Watson IoT platform via MQTT subscriber
 
@@ -296,7 +294,7 @@ Network Id |  | -->
 **Important** After submitting the form, a request will be sent to the `/init_client` endpoint with the provided parameters. This will fetch the network configuration file and create/enroll a fabric user named "monitoring_user". Once this is complete, a PEM encoded Certificate will be output to the server logs like so.
 
 <p align="center">
-<img src="https://i.imgur.com/5ZRGcux.png" width="350" height="350" style="margin-left: auto; margin-right: auto;">
+<img src="https://i.imgur.com/5ZRGcux.png" width="450" height="350" style="margin-left: auto; margin-right: auto;">
 </p>
 
 This certificate will need to be manually uploaded via the blockchain service UI. The chaincode operations will not work until this step has been completed.
