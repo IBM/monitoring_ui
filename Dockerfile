@@ -5,4 +5,4 @@ RUN git clone https://github.com/IBM/monitoring_ui
 RUN cd monitoring_ui && ./setup.sh
 EXPOSE 8081
 WORKDIR monitoring_ui
-CMD npm run dev-server
+CMD /bin/bash -c ". ~/.bash_profile && npm run dev-server"

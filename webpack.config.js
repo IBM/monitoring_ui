@@ -47,7 +47,7 @@ module.exports = {
     inline: true,
     progress: true,
     stats: 'errors-only',
-    host: process.env.HOST,
+    host: "0.0.0.0", //process.env.HOST,
     port: process.env.PORT || 8081
   },
   plugins:[
