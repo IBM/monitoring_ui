@@ -4,5 +4,7 @@ applications:
   timeout: 180
   command: npm run dev-server
   memory: 128M
-  engines:
-    node: 8.9.0
+  #engines:
+  #  node: 8.9.0
+  docker:
+    image: docker.io/kkbankol/monitoring_ui

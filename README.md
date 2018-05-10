@@ -161,7 +161,14 @@ For additional documentation on the chaincode implementation, please see the REA
 
 ### 4. Install dependencies
 
-Install [Node.js](https://nodejs.org/en/) runtime and NPM. Currently the Hyperledger fabric-sdk only appears to work with node v8.9.0+, but [is not yet supported](https://github.com/hyperledger/fabric-sdk-node#build-and-test) on node v9.0+. If your system requires newer versions of node for other projects, we'd suggest using [nvm](https://github.com/creationix/nvm) to easily switch between node versions. We did so with the following commands
+If you have docker installed, you can run the application with the following commands, and then skip to [Step 5](#5-configure-credentials)
+```
+docker build -t monitoring_ui .
+docker run -d -p 8081:8080 monitoring_ui
+```
+
+
+Otherwise, continue by installing [Node.js](https://nodejs.org/en/) runtime and NPM. Currently the Hyperledger fabric-sdk only appears to work with node v8.9.0+, but [is not yet supported](https://github.com/hyperledger/fabric-sdk-node#build-and-test) on node v9.0+. If your system requires newer versions of node for other projects, we'd suggest using [nvm](https://github.com/creationix/nvm) to easily switch between node versions. We did so with the following commands
 ```
 curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
 # Place next three lines in ~/.bash_profile
