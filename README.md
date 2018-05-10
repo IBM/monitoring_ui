@@ -9,10 +9,10 @@ In this Code Pattern, we'll use React.js, Watson IoT Platform, and the Hyperledg
 
 When the reader has completed this Code Pattern, they will understand how to:
 
-* Create a chaincode schema defining an asset and its properties
 * Deploy a smart contract to handle asset updates/queries
+* Create a schema describing the properties of an asset
 * Monitor and propose blockchain transactions via a UI
-* Integrate Watson IoT platform to directly receive asset updates via MQTT or HTTP from registered IoT devices
+* Integrate Watson IoT platform to directly receive asset updates from registered IoT devices via MQTT or HTTP
 
 <!--Remember to dump an image in this path-->
 <p align="center">
@@ -22,11 +22,44 @@ When the reader has completed this Code Pattern, they will understand how to:
 
 ## Flow
 <!--Add new flow steps based on the architecture diagram-->
-1. Upload and Instantiate smart contracts via the Bluemix Network Monitor
+<!-- 1. Upload and Instantiate smart contracts via the Bluemix Network Monitor
 2. Deploy the node application locally or on bluemix
 3. Input connection information such as service credentials, endpoint, etc into configuration form
 4. Submitting form sends a request to pull a json file containing the connection profile. The information from this profile is used to create a "monitoring" client with administrative privileges
-5. If form data is valid, user should be able to execute Chaincode operations, view individual blocks and their data, and request state of registered Assets
+5. If form data is valid, user should be able to execute Chaincode operations, view individual blocks and their data, and request state of registered Assets -->
+1. User submits CRUD request through monitoring_ui
+   OR
+   IoT Device scans Asset (barcode, NFC) and publishes "update" message to Watson IoT Platform
+
+2. Node Express backend receives request from user or from Watson IoT platform via MQTT subscriber
+
+2. Request is formatted into a jsonrpc object like so.
+```
+{
+    jsonrpc: '2.0',
+    method: 'invoke',
+    params: {
+        type: 1,
+        chaincodeID: {
+            name: 'simple_contract'
+        },
+        ctorMsg: {
+            function: 'createAsset',
+            args: ["assetID", '{"carrier": "Port of Long Beach", "longitude":"33.754185", "latitude": "-118.216458", "temperature": "44 F"}']
+        },
+        secureContext: 'kkbankol@us.ibm.com'
+    },
+    id: 5
+}
+```
+4. Fabric SDK is used to forward formatted request as a transaction proposal to hyperledger service
+
+5. If proposal is accepted, transaction is then submitted to hyperledger peer
+
+5. Result is printed in "Response Payloads" section in monitoring UI
+
+6. Monitoring UI auto-refreshes to show latest blockchain transactions
+
 <!-- TODO expand on this -->
 
 <!--Update this section-->
@@ -67,20 +100,18 @@ TODO, In progress
 ![](doc/source/images/toolchain-pipeline.png)
 
 <!--update with service names from manifest.yml-->
-3. To see the app and services created and configured for this Code Pattern, use the IBM Cloud dashboard. The app is named `monitoring-ui` with a unique suffix. The following services are created and easily identified by the `wbc-` prefix:
-    * Blockchain-2i
-    * Internet of Things Platform-j0
+3. To see the app and services created and configured for this Code Pattern, use the IBM Cloud dashboard. The app is named `monitoring-ui` with a unique suffix. The following services will be created:
+    * Blockchain
+    * Internet of Things Platform
 
 ## Run locally
 > NOTE: These steps are only needed when running locally instead of using the ``Deploy to IBM Cloud`` button.
 
 <!-- there are MANY updates necessary here, just screenshots where appropriate -->
-
-TODO, correct steps
 1. [Clone the repo](#1-clone-the-repo)
 2. [Create Watson services with IBM Cloud](#2-create-watson-services-with-ibm-cloud)
-3. [Import the Conversation workspace](#3-import-the-conversation-workspace)
-4. [Load the Discovery documents](#4-load-the-discovery-documents)
+3. [Upload and Instantiate Chaincode](#3-import-the-conversation-workspace)
+4. [Install dependencies](#4-load-the-discovery-documents)
 5. [Configure credentials](#5-configure-credentials)
 5. [Run the application](#6-run-the-application)
 
@@ -99,9 +130,9 @@ Provision the following services:
 * [**Watson IoT Platform**](https://console.bluemix.net/catalog/services/internet-of-things-platform)
 
 ### 3. Upload / Instantiate Chaincode
-The smart contracts, commonly referred to as "Chaincode", can be used to execute business logic and handle
+The smart contracts, commonly referred to as "Chaincode", can be used to execute business logic and validate incoming requests
 
-In this context, the contracts are used to implement CRUD operations for tracking device data on the IBM Blockchain ledger.
+In this context, the contracts are used to implement CRUD operations for tracking assets on the IBM Blockchain ledger.
 
 To begin the process of uploading the smart contracts, we can start by opening the Bluemix UI, selecting your provisioned Blockchain service, and accessing the blockchain network monitor by clicking "Enter Monitor"
 <p align="center">
@@ -113,10 +144,10 @@ Next, click the "Install code" option on the left hand menu, and then the "Insta
 <img src="https://i.imgur.com/HmdDsgm.png"  data-canonical-src="https://i.imgur.com/HmdDsgm.png" width="650" height="450" style="margin-left: auto; margin-right: auto;">
 </p>
 
-Enter an id ("simple_contract") and a version ("v1"). Also, click the "Add Files" button to upload the each of the [samples.go](contracts/basic/simple_contract/samples.go), [schemas.go](contracts/basic/simple_contract/schemas.go), and [simple_contract_hyperledger.go](contracts/basic/simple_contract/simple_contract_hyperledger.go) files
+Enter an id ("simple_contract") and a version ("v1"). Then, select the "Add Files" button to upload the [samples.go](contracts/basic/simple_contract/samples.go), [schemas.go](contracts/basic/simple_contract/schemas.go), and [simple_contract_hyperledger.go](contracts/basic/simple_contract/simple_contract_hyperledger.go) files
 
 <p align="center">
-<img src="https://i.imgur.com/nYwMM47.png"  data-canonical-src="https://i.imgur.com/nYwMM47.png" width="450" height="450" style="margin-left: auto; margin-right: auto;">
+<img src="https://i.imgur.com/nYwMM47.png"  data-canonical-src="https://i.imgur.com/nYwMM47.png" width="650" height="450" style="margin-left: auto; margin-right: auto;">
 </p>
 
 Finally, we'll need to Instantiate the chaincode. This can be done by opening the chaincode options menu and selecting "Instantiate"
@@ -126,24 +157,32 @@ This will present a form where arguments can be provided to the chaincodes `init
 <img src="https://i.imgur.com/blo1Qx3.png"  data-canonical-src="https://i.imgur.com/blo1Qx3.png" width="450" height="450" style="margin-left: auto; margin-right: auto;">
 </p>
 
-For additional documentation on the chaincode implementation, please see the [simple_contract](contracts/basic/simple_contract) directory
+For additional documentation on the chaincode implementation, please see the README in the [simple_contract](contracts/basic/simple_contract) directory
 
-### 3. Install/Build dependencies
+### 4. Install dependencies
 
-Install [Node.js](https://nodejs.org/en/) runtime and NPM. Currently the hyperledger fabric-sdk only appears to work with node v8.9.0+, but [is not supported](https://github.com/hyperledger/fabric-sdk-node#build-and-test) on node v9.0+. If your system requires newer versions of node for other projects, we'd suggest using [nvm](https://github.com/creationix/nvm) to easily switch between node versions. We did so with the command
+Install [Node.js](https://nodejs.org/en/) runtime and NPM. Currently the Hyperledger fabric-sdk only appears to work with node v8.9.0+, but [is not yet supported](https://github.com/hyperledger/fabric-sdk-node#build-and-test) on node v9.0+. If your system requires newer versions of node for other projects, we'd suggest using [nvm](https://github.com/creationix/nvm) to easily switch between node versions. We did so with the following commands
 ```
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+# Place next three lines in ~/.bash_profile
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 nvm install v8.9.0
 nvm use 8.9.0
 ```
 
-To install the Monitoring UI on your local workstation, run `npm install` in the root directory of this project and in the [react-backend](react-backend) directory:
+Install the Monitoring UI node packages by running `npm install` in the project root directory and in the [react-backend](react-backend) directory. Both `python` and `build-essential` are required for these dependencies to install properly:
 ```
 npm install
 cd react-backend && npm install
 ```
 
-Next, compile the required `bundle.js` file in the public directory with the command
-`npm run build`
+Finally, compile the `bundle.js` file
+```
+cd public
+npm run build
+```
 <!-- Method	| Command	|Comment
 --- | --- | ---
 Filesystem | `npm run build` | The build command generates the bundle.js file in the public directory. </br>To access the Monitoring UI, go to the `monitoring_ui/public` directory and open the *index.html* file in a browser. -->
@@ -170,18 +209,17 @@ This method is ideal for a development environment but not suitable for a produc
 
 <!--Add a section that explains to the reader what typical output looks like, include screenshots -->
 
-# Sample output
-
-![](doc/source/images/sample_output.png)
+<p align="center">
+<img src="https://i.imgur.com/BMbb8Oq.png"  data-canonical-src="https://i.imgur.com/BMbb8Oq.png" width="750" height="450" style="margin-left: auto; margin-right: auto;">
+</p>
 
 <!--Include any troubleshooting tips (driver issues, etc)-->
 
 ### 5. Configure credentials
 
-The credentials for IBM Cloud services (Blockchain, Watson IoT Platform), can be found in the ``Services`` menu in IBM Cloud,
-by selecting the ``Service Credentials`` option for each service.
+The credentials for IBM Cloud services (Blockchain, Watson IoT Platform), can be found in the ``Services`` menu in IBM Cloud by selecting the ``Service Credentials`` option for each service.
 
-The Blockchain credentials consist of a `key`, `secret`, and `network_id` parameter like so
+The Blockchain credentials consist of the `key`, `secret`, and `network_id` parameters
 <!-- ![]("https://i.imgur.com/Qof7sve.png" width="250" height="400") -->
 <p align="center">
 <img src="https://i.imgur.com/Qof7sve.png"  data-canonical-src="https://i.imgur.com/Qof7sve.png" width="450" height="450" style="margin-left: auto; margin-right: auto;">
@@ -229,7 +267,7 @@ TONE_ANALYZER_PASSWORD=<add_tone_analyzer_password>
 
 ### 6. UI Configuration
 
-Before you can access the blockchain information with the Monitoring UI, you must point it to a blockchain peer server and provide a contract ID to monitor. Access the configuration by clicking **CONFIGURATION**.  
+Before you can access blockchain information via the Monitoring UI, you must point it to a blockchain peer server and provide a contract ID to monitor. Access the configuration by clicking **CONFIGURATION**.  
 
 <p align="center">
 <img src="https://i.imgur.com/pS3s5vg.png" width="650" height="450" style="margin-left: auto; margin-right: auto;">
@@ -251,7 +289,7 @@ Network Id |  | -->
 **Important** After submitting the form, a request will be sent to the `/init_client` endpoint with the provided parameters. This will fetch the network configuration file and create/enroll a fabric user named "monitoring_user". Once this is complete, a PEM encoded Certificate will be output to the server logs like so.
 
 <p align="center">
-<img src="https://i.imgur.com/i1NLzVf.png" width="350" height="350" style="margin-left: auto; margin-right: auto;">
+<img src="https://i.imgur.com/5ZRGcux.png" width="350" height="350" style="margin-left: auto; margin-right: auto;">
 </p>
 
 This certificate will need to be manually uploaded via the blockchain service UI. The chaincode operations will not work until this step has been completed.
@@ -273,7 +311,13 @@ Clicking "Add certificate" will present the following form
 
 # Troubleshooting
 
-* Error: Environment {GUID} is still not active, retry once status is active
+* `sendPeersProposal - Promise is rejected: Error: 2 UNKNOWN: chaincode error (status: 500, message: Authorization for GETINSTALLEDCHAINCODES on channel getinstalledchaincodes has been denied with error Failed verifying that proposal's creator satisfies local MSP principal during channelless check policy with policy [Admins]: [This identity is not an admin]`
+> This error occurs if the certificate generated by the SDK user has not been uploaded to the peer
+
+* `Error: The gRPC binary module was not installed. This may be fixed by running "npm rebuild"`
+> `grpc` is a requirement for the fabric-client SDK. Confirm that is has been installed in the `react_backend` directory with `npm install grpc@1.11.0`
+
+<!-- * Error: Environment {GUID} is still not active, retry once status is active
 
   > This is common during the first run. The app tries to start before the Discovery
 environment is fully created. Allow a minute or two to pass. The environment should
@@ -285,7 +329,7 @@ be usable on restart. If you used `Deploy to IBM Cloud` the restart should be au
 a Discovery environment, this will fail. If you are not using Discovery, check for an old
 service thay you may want to delete. Otherwise use the .env DISCOVERY_ENVIRONMENT_ID to tell
 the app which environment you want it to use. A collection will be created in this environment
-using the default configuration.
+using the default configuration. -->
 
 <!--This can stay as-is if using Deploy to IBM Cloud-->
 
@@ -315,8 +359,8 @@ To disable tracking, simply remove ``require("cf-deployment-tracker-client").tra
 
 # Links
 Blockchain Supply Chain articles
-https://aqurus.ca/blockchain-crucial-link-supply-chain/
-https://medium.com/scandinavian-cryptocurrency-exchange/how-blockchain-technology-can-optimize-product-supply-chains-53164a11a1ba
+- https://aqurus.ca/blockchain-crucial-link-supply-chain/
+- https://medium.com/scandinavian-cryptocurrency-exchange/how-blockchain-technology-can-optimize-product-supply-chains-53164a11a1ba
 
 <!-- * [Demo on Youtube](https://www.youtube.com/watch?v=Jxi7U7VOMYg) -->
 * [Hyperledger Node.js SDK](https://github.com/hyperledger/fabric-sdk-node)
