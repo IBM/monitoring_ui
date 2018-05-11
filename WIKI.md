@@ -37,11 +37,11 @@ https://www.youtube.com/watch?v=Mw6924hCAIc
 In this code pattern, we will demonstrate a blockchain monitoring application using React + Node.js with the Hyperledger Fabric SDK. This integration allows users to execute actions against the blockchain and monitor the state of assets.
 
 When the reader has completed this code pattern, they will understand how to:
-* Create a schema defining an asset and its properties
-* Deploy a smart contract to handle asset updates/queries
-* Monitor and propose blockchain transactions via a UI
-* Integrate Watson IoT platform to directly receive asset updates via MQTT or HTTP
 
+* Deploy a smart contract that has the ability to handle asset updates/queries
+* Create a schema describing the properties of an asset
+* Monitor and propose blockchain transactions via a UI
+* Integrate Watson IoT platform to directly receive asset updates from registered IoT devices via MQTT or HTTP
 
 
 
@@ -74,23 +74,49 @@ Deploy a application that leverages Blockchain integrated with Watson IoT Platfo
 
 # Flow
 
-![](link to architecture.png)
+<p align="center">
+<!-- <img src="https://i.imgur.com/lNZxVxo.png"  data-canonical-src="https://i.imgur.com/lNZxVxo.png" width="650" height="450" style="margin-left: auto; margin-right: auto;"> -->
+<img src="/images/architecture.png"  />
+</p>
 
-1. Upload and Instantiate smart contracts via the Bluemix Network Monitor
-2. Deploy the node application locally or on bluemix
-3. Input connection information such as service credentials, Hyperledger endpoint into configuration form
-4. Submitting form sends a request to receive a connection profile and creates a "monitoring" client with administrative privileges
-5. If form data is valid, user should be able to execute Chaincode operations, view individual blocks and their data, and request state of registered Assets
+1. User submits CRUD request through monitoring_ui **OR** IoT Device scans Asset (barcode, NFC) and publishes "update" message to Watson IoT Platform
+
+2. Node Express backend receives request from user or from Watson IoT platform via MQTT subscriber
+
+2. Request is formatted into a jsonrpc object like so.
+```
+{
+    jsonrpc: '2.0',
+    method: 'invoke',
+    params: {
+        type: 1,
+        chaincodeID: {
+            name: 'simple_contract'
+        },
+        ctorMsg: {
+            function: 'createAsset',
+            args: ["assetID", '{"carrier": "Port of Long Beach", "longitude":"33.754185", "latitude": "-118.216458", "temperature": "44 F"}']
+        },
+        secureContext: 'kkbankol@us.ibm.com'
+    },
+    id: 5
+}
+```
+4. Fabric SDK is used to forward formatted request as a transaction proposal to hyperledger service
+
+5. If proposal is accepted, transaction is then submitted to hyperledger peer
+
+5. Result is printed in "Response Payloads" section in monitoring UI
+
+6. Monitoring UI auto-refreshes to show latest blockchain transactions
 
 # Included components
 
-* [title](link): description
 * [Blockchain](https://console.bluemix.net/catalog/services/blockchain)
 * [Watson IoT Platform](https://console.bluemix.net/catalog/services/internet-of-things-platform)
 
 # Featured technologies
 
-* [title](link): description
 * [Hyperledger Fabric](https://hyperledger-fabric.readthedocs.io/en/release-1.1/)
 * [MQTT](http://mqtt.org/faq)
 
