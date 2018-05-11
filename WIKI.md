@@ -34,15 +34,16 @@ https://www.youtube.com/watch?v=Mw6924hCAIc
 
 # Overview
 
-In this code pattern, we will demonstrate a blockchain monitoring application using React + Node.js with the Hyperledger Fabric SDK. This integration allows users to execute actions against the blockchain and monitor the state of assets.
+In this code pattern, we will demonstrate a blockchain monitoring application using React + Node.js with the Hyperledger Fabric SDK. This integration allows users to easily execute actions against the blockchain and monitor the state of assets.
 
 When the reader has completed this code pattern, they will understand how to:
 
-* Deploy a smart contract that has the ability to handle asset updates/queries
+* Deploy a Hyperledger Blockchain network on IBM Cloud
+* Create and enroll a administrative client using the Hyperledger Node SDK
+* Deploy and Instantiate a smart contract to handle asset updates/queries
 * Create a schema describing the properties of an asset
 * Monitor and propose blockchain transactions via a UI
 * Integrate Watson IoT platform to directly receive asset updates from registered IoT devices via MQTT or HTTP
-
 
 
 <!-- This application provides a visual
@@ -74,16 +75,9 @@ Deploy a application that leverages Blockchain integrated with Watson IoT Platfo
 
 # Flow
 
-<p align="center">
-<!-- <img src="https://i.imgur.com/lNZxVxo.png"  data-canonical-src="https://i.imgur.com/lNZxVxo.png" width="650" height="450" style="margin-left: auto; margin-right: auto;"> -->
-<img src="/images/architecture.png"  />
-</p>
+1. A request is submitted to Create, Read, Update, or Delete an asset from a blockchain ledger. This request may either be submitted manually by a user via the monitoring UI browser, or from a IoT device (NFC/barcode scanner, etc) publishing a MQTT message to the Watson IoT Platform
 
-1. User submits CRUD request through monitoring_ui **OR** IoT Device scans Asset (barcode, NFC) and publishes "update" message to Watson IoT Platform
-
-2. Node Express backend receives request from user or from Watson IoT platform via MQTT subscriber
-
-2. Request is formatted into a jsonrpc object like so.
+2. Node Express backend formats CRUD request into a [jsonrpc](http://www.jsonrpc.org/specification#examples) object like below, and submits it to a Hyperledger peer as a transaction proposal
 ```
 {
     jsonrpc: '2.0',
@@ -95,20 +89,23 @@ Deploy a application that leverages Blockchain integrated with Watson IoT Platfo
         },
         ctorMsg: {
             function: 'createAsset',
-            args: ["assetID", '{"carrier": "Port of Long Beach", "longitude":"33.754185", "latitude": "-118.216458", "temperature": "44 F"}']
+            args: '["assetID", {"carrier": "Port of Long Beach", "longitude":"33.754185", "latitude": "-118.216458", "temperature": "44 F"}]'
         },
         secureContext: 'kkbankol@us.ibm.com'
     },
     id: 5
 }
 ```
-4. Fabric SDK is used to forward formatted request as a transaction proposal to hyperledger service
+<!-- 3. Fabric Node SDK submits CRUD request to Hyperledger peer as a transaction proposal -->
 
-5. If proposal is accepted, transaction is then submitted to hyperledger peer
+3. Peer uses an "endorsement" service to simulate the proposed transaction against the relevant smart contracts. This endorsement service is used to confirm that the transaction is possible given the current state of the ledger. Examples of invalid proposals might be creating an asset that already exists, querying the state of an asset that does not exist, etc.
+<!-- to simulate the transaction request against smart contracts and the current ledger state -->
 
-5. Result is printed in "Response Payloads" section in monitoring UI
+4. If the simulation is successful, the proposal is then "signed" by the peer's endorser.
 
-6. Monitoring UI auto-refreshes to show latest blockchain transactions
+5. The signed transaction is forwarded to an ordering service, which executes the transactions and places the result into the ledger
+
+6. The Monitoring UI auto-refreshes to show the transaction result and updated ledger in the "Response Payloads" and "Blockchain" columns, respectively
 
 # Included components
 

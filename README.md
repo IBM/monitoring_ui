@@ -163,7 +163,7 @@ In the "Security" tab, an Authentication token can be entered as long as it meet
 <img src="https://i.imgur.com/rycnjlF.png"  data-canonical-src="https://i.imgur.com/rycnjlF.png">
 </p>
 
-Clicking the "Finish" button will generate a set of credentials that can be used to publish to the MQTT broker
+Clicking the "Finish" button will generate a set of credentials that can be used to publish messages to the IoT Platform
 
 <p align="center">
 <img src="https://i.imgur.com/A2A6yXW.png" width="650" height="450">
@@ -175,7 +175,7 @@ Username: `use-token-auth` </br>
 Password: `${authentication_token}` </br>
 Endpoint: `${organization_id}.messaging.internetofthings.ibmcloud.com` </br>
 
-To publish messages, a MQTT client will need to be installed on the IoT devices responsible for updating state of the Assets. These clients are very lightweight, and are able to run on resource constrained devices such as Arduino, Raspberry Pi, CHIP, etc.
+To publish messages, a MQTT client will need to be installed on the IoT devices responsible for reading and sending asset updates. These clients are very lightweight, and are able to run on resource constrained devices such as Arduino, Raspberry Pi, CHIP, etc.
 
 Now that we have a valid set of credentials, we can use an MQTT client to send a sample command. There are a few clients available online, but for simplicity we'll use a node cli client. This particular client can be installed by running `npm install -g mqtt`, and is also used by the Monitoring UI backend. After exporting the MQTT credentials we can publish a json payload with the following commands
 
