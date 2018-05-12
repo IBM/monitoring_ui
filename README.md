@@ -99,7 +99,7 @@ TODO, In progress
 1. Press the above ``Deploy to IBM Cloud`` button and then click on ``Deploy``.
 
 <!--optional step-->
-2. In Toolchains, click on Delivery Pipeline to watch while the app is deployed. Once deployed, the app can be viewed by clicking 'View app'.
+2. In Toolchains, click on ``Delivery Pipeline`` to watch while the app is deployed. Once deployed, the app can be viewed by clicking ``View app``.
 ![](doc/source/images/toolchain-pipeline.png)
 
 <!--update with service names from manifest.yml-->
@@ -133,19 +133,19 @@ Next, we'll need to deploy our service instances using the IBM Cloud dashboard.
 ### Watson IoT Platform
 We can start by deploying an instance of the Watson IoT Service. In this pattern, the primary role of this service is to offer an secure MQTT broker that'll receive asset updates from IoT devices. Our Monitoring UI subscribes to the MQTT broker and processes incoming messages with the fabric-client node SDK.
 
-First, log into the IBM Cloud dashboard at [https://console.bluemix.net/](https://console.bluemix.net/) and select the "Catalog" button in the upper right.
+First, log into the IBM Cloud dashboard at [https://console.bluemix.net/](https://console.bluemix.net/) and select the ``Catalog`` button in the upper right.
 
 <p align="center">
 <img src="https://i.imgur.com/0CctlyI.png"  data-canonical-src="https://i.imgur.com/0CctlyI.png">
 </p>
 
-In the search bar type "IoT" and click the icon titled "Internet of Things Platform Starter".
+In the search bar type "IoT" and click the icon titled ``Internet of Things Platform Starter``.
 
 <p align="center">
 <img src="https://i.imgur.com/GtCcdEJ.png"  data-canonical-src="https://i.imgur.com/GtCcdEJ.png">
 </p>
 
-Once this service is provisioned, we'll need to generate a set of credentials for connecting to the broker. We can do so by entering the IoT Platform dashboard, selecting "Devices" from the left hand menu, and then clicking the "Add Device" button
+Once this service is provisioned, we'll need to generate a set of credentials for connecting to the broker. We can do so by entering the IoT Platform dashboard, selecting ``Devices`` from the left hand menu, and then clicking the ``Add Device`` button
 <p align="center">
 <img src="https://i.imgur.com/fec24FG.png"  data-canonical-src="https://i.imgur.com/fec24FG.png">
 </p>
@@ -157,13 +157,13 @@ Next, provide a device type and ID.
 
 The next two steps (Device Information, Groups) can be skipped.
 
-In the "Security" tab, an Authentication token can be entered as long as it meets certain criteria (between 8 and 36 characters, contains mix of lowercase/uppercase letters, numbers, and symbols). Leave this field blank if you'd like for one to be generated instead.
+In the ``Security`` tab, an Authentication token can be entered as long as it meets certain criteria (between 8 and 36 characters, contains mix of lowercase/uppercase letters, numbers, and symbols). Leave this field blank if you'd like for one to be generated instead.
 
 <p align="center">
 <img src="https://i.imgur.com/rycnjlF.png"  data-canonical-src="https://i.imgur.com/rycnjlF.png">
 </p>
 
-Clicking the "Finish" button will generate a set of credentials that can be used to publish messages to the IoT Platform
+Clicking the ``Finish`` button will generate a set of credentials that can be used to publish messages to the IoT Platform
 
 <p align="center">
 <img src="https://i.imgur.com/A2A6yXW.png" width="650" height="450">
@@ -194,7 +194,7 @@ mqtt_pub -i "d:${organization_id}:${device_type}:${device_id}" -u "${username}" 
 }'
 ```
 
-And the we can see that message has been received by the IoT Platform dashboard by going back to the "Devices" menu, selecting our corresponding device, and then selecting "Recent Events"
+And then we can see that message has been received by the IoT Platform dashboard by going back to the ``Devices`` menu, selecting our corresponding device, and then selecting ``Recent Events``
 
 <p align="center">
 <img src="https://i.imgur.com/lNJ668W.png"  data-canonical-src="https://i.imgur.com/d4QbQFP.png">
@@ -202,13 +202,13 @@ And the we can see that message has been received by the IoT Platform dashboard 
 
 ### Blockchain
 
-We can continue on by deploying the IBM Blockchain service. This can be found by logging in to the IBM Cloud [dashboard](https://console.bluemix.net/), selecting the "Catalog" button, searching for "Blockchain", and clicking on the resulting icon. Or click this [*link*](https://console.bluemix.net/catalog/services/blockchain).
+We can continue on by deploying the IBM Blockchain service. This can be found by logging in to the IBM Cloud [dashboard](https://console.bluemix.net/), selecting the ``Catalog`` button, searching for ``Blockchain``, and clicking on the resulting icon. Or click this [*link*](https://console.bluemix.net/catalog/services/blockchain).
 
 <p align="center">
 <img src="https://i.imgur.com/qWQOXq5.png"  data-canonical-src="https://i.imgur.com/qWQOXq5.png">
 </p>
 
-After selecting the blockchain icon, a form will be presented for configuring the service name, region, and pricing plan. The default values for these fields can be left as is. Also, be sure that the free pricing tier is selected, which is titled "Starter Membership Plan". If you are using an IBM Cloud Lite account, this plan can be used for free for up to 30 days. After validating that the information in the form is correct, scroll down and click the "Create" button in the lower right corner
+After selecting the blockchain icon, a form will be presented for configuring the service name, region, and pricing plan. The default values for these fields can be left as is. Also, be sure that the free pricing tier is selected, which is titled "Starter Membership Plan". If you are using an IBM Cloud Lite account, this plan can be used for free for up to 30 days. After validating that the information in the form is correct, scroll down and click the ``Create`` button in the lower right corner
 <p align="center">
 <img src="https://i.imgur.com/ROAjOzr.png"  data-canonical-src="https://i.imgur.com/ROAjOzr.png">
 </p>
@@ -224,17 +224,17 @@ If you're manually deploying the application and services, -->
 ## 3. Upload / Instantiate Chaincode
 "Smart contracts", commonly referred to as "Chaincode", can be used to execute business logic and validate incoming requests. In this context, the contracts are used to implement CRUD operations for tracking assets on the IBM Blockchain ledger.
 
-To begin the process of uploading the smart contracts to the blockchain, we can start by opening the IBM Cloud dashboard, selecting your provisioned Blockchain service, and accessing the blockchain network monitor by clicking "Enter Monitor"
+To begin the process of uploading the smart contracts to the blockchain, we can start by opening the IBM Cloud dashboard, selecting your provisioned Blockchain service, and accessing the blockchain network monitor by clicking ``Enter Monitor``
 <p align="center">
 <img src="https://i.imgur.com/J2pbo7H.png"  data-canonical-src="https://i.imgur.com/J2pbo7H.png" width="650" height="450" style="margin-left: auto; margin-right: auto;">
 </p>
 
-Next, click the "Install code" option on the left hand menu, and then the "Install Chaincode" button on the right of the page
+Next, click the ``Install code`` option on the left hand menu, and then the ``Install Chaincode`` button on the right of the page
 <p align="center">
 <img src="https://i.imgur.com/HmdDsgm.png"  data-canonical-src="https://i.imgur.com/HmdDsgm.png" width="650" height="450" style="margin-left: auto; margin-right: auto;">
 </p>
 
-Enter an id and a version (here we'll use "simple_contract" and "v1"). Then, select the "Add Files" button to upload the [samples.go](contracts/basic/simple_contract/samples.go), [schemas.go](contracts/basic/simple_contract/schemas.go), and [simple_contract_hyperledger.go](contracts/basic/simple_contract/simple_contract_hyperledger.go) files
+Enter an id and a version (here we'll use "simple_contract" and "v1"). Then, select the ``Add Files`` button to upload the [samples.go](contracts/basic/simple_contract/samples.go), [schemas.go](contracts/basic/simple_contract/schemas.go), and [simple_contract_hyperledger.go](contracts/basic/simple_contract/simple_contract_hyperledger.go) files
 
 <p align="center">
 <img src="https://i.imgur.com/nYwMM47.png"  data-canonical-src="https://i.imgur.com/nYwMM47.png" width="650" height="450" style="margin-left: auto; margin-right: auto;">
@@ -242,7 +242,7 @@ Enter an id and a version (here we'll use "simple_contract" and "v1"). Then, sel
 
 Finally, we'll need to Instantiate the chaincode. This can be done by opening the chaincode options menu and selecting "Instantiate"
 
-This will present a form where arguments can be provided to the chaincodes `init` function. In this case, we'll just need to provide a json string `{"version":"1.0"}` in the Arguments section, and then click "Submit"
+This will present a form where arguments can be provided to the chaincodes `init` function. In this case, we'll just need to provide a json string `{"version":"1.0"}` in the Arguments section, and then click ``Submit``
 <p align="center">
 <img src="https://i.imgur.com/blo1Qx3.png"  data-canonical-src="https://i.imgur.com/blo1Qx3.png" width="450" height="450" style="margin-left: auto; margin-right: auto;">
 </p>
@@ -404,17 +404,17 @@ Once this endpoint is invoked, it will call a series of methods to carry out the
 </br>
 The certificate will need to be manually uploaded to one of the blockchain peers via the blockchain network monitor. A "[peer](http://hyperledger-fabric.readthedocs.io/en/release-1.1/peers/peers.html)" is a member of a blockchain network that's responsible for hosting copies of the ledger and chaincode. These are the primary interaction endpoint for both administrators and members with limited access. For a client to carry out administrative requests, they must have a PEM certificate that has been uploaded to the peer. The chaincode operations will not work until this step has been completed.
 
-This can be done by going back to the IBM Cloud dashboard, selecting your provisioned Blockchain service, and accessing the blockchain network monitor by clicking "Enter Monitor"
+This can be done by going back to the IBM Cloud dashboard, selecting your provisioned Blockchain service, and accessing the blockchain network monitor by clicking ``Enter Monitor``
 <p align="center">
 <img src="https://i.imgur.com/J2pbo7H.png" width="650" height="450" style="margin-left: auto; margin-right: auto;">
 </p>
 
-After entering the Network Monitor, select the "Members" section from the left hand menu. Then, select the "Certificate" option, and click "Add certificate"
+After entering the Network Monitor, select the ``Members`` section from the left hand menu. Then, select the ``Certificate`` option, and click ``Add certificate``
 <p align="center">
 <img src="https://i.imgur.com/cKZthHB.png" width="650" height="450" style="margin-left: auto; margin-right: auto;">
 </p>
 
-Clicking "Add certificate" will present the following form
+Clicking ``Add certificate`` will present the following form
 <p align="center">
 <img src="https://i.imgur.com/cD125af.png" width="650" height="450" style="margin-left: auto; margin-right: auto;">
 </p>
