@@ -48,7 +48,9 @@ module.exports = {
     progress: true,
     stats: 'errors-only',
     host: "0.0.0.0", //process.env.HOST,
-    port: process.env.PORT || 8081
+    port: process.env.PORT,
+    disableHostCheck: true
+
   },
   plugins:[
     new webpack.HotModuleReplacementPlugin()

@@ -3,8 +3,12 @@ applications:
   path: .
   timeout: 180
   command: npm run dev-server
-  memory: 128M
-  #engines:
-  #  node: 8.9.0
-  docker:
-    image: docker.io/kkbankol/monitoring_ui
+  #port: 8081
+  memory: 512M
+  engines:
+    node: 8.9.0
+  buildpack: https://github.com/cloudfoundry/nodejs-buildpack
+  #env:
+  #  PORT: $PORT
+  #docker:
+  #  image: docker.io/kkbankol/monitoring_ui

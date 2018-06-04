@@ -119,6 +119,36 @@ class ObcConfigurationForm extends React.Component {
             />
         </MaterialField>
         <br/>
+
+
+        <MaterialField model="obcConfiguration.iotOrg">
+          <TextField
+            hintText="IoT Platform Organization"
+            floatingLabelText = "IoT Platform Organization"
+            fullWidth={true}
+            />
+        </MaterialField>
+        <br/>
+
+        <MaterialField model="obcConfiguration.iotApiKey">
+          <TextField
+            hintText="IoT Plaform Api Key"
+            floatingLabelText = "IoT Plaform Api Key"
+            fullWidth={true}
+            />
+        </MaterialField>
+        <br/>
+
+        <MaterialField model="obcConfiguration.iotAuthToken">
+          <TextField
+            hintText="IoT Plaform Auth Token"
+            floatingLabelText = "IoT Plaform Auth Token"
+            fullWidth={true}
+            />
+        </MaterialField>
+        <br/>
+
+        <br/>
           {/*submit button for form*/}
           <div style={{textAlign: 'right'}}>
             <FlatButton label={strings.OBC_CONFIG_SUBMIT_LABEL} primary={true} type={"submit"}/>

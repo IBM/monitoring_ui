@@ -40,7 +40,10 @@ export const configuration = (state={
   key: "org1",
   secret: "secret",
   networkId: "networkId",
-  channel: "defaultchannel"
+  channel: "defaultchannel",
+  iot_org: "",
+  iot_api_key: "",
+  iot_auth_token: ""
 }, action) => {
   /**
     These state configuration actions are implemented, but we don't use them in the UI. Feel free to wire them to a UI element if needed.
@@ -69,7 +72,10 @@ export const configuration = (state={
         key: action.obcConfigObj.key,
         secret: action.obcConfigObj.secret,
         networkId: action.obcConfigObj.networkId,
-        channel: action.obcConfigObj.channel
+        channel: action.obcConfigObj.channel,
+        iotOrg: action.obcConfigObj.iotOrg,
+        iotAuthToken: action.obcConfigObj.iotAuthToken,
+        iotApiKey: action.obcConfigObj.iotApiKey
       }
       let config = {
           method: 'POST',

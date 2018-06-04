@@ -1,8 +1,8 @@
 <!--Put badges at the very top -->
 <!--change the repos -->
 <!--change the tracking number -->
-[![Build Status](https://travis-ci.org/IBM/watson-banking-chatbot.svg?branch=master)](https://travis-ci.org/IBM/watson-banking-chatbot)
-![IBM Cloud Deployments](https://metrics-tracker.mybluemix.net/stats/527357940ca5e1027fbf945add3b15c4/badge.svg)
+<!-- [![Build Status](https://travis-ci.org/IBM/watson-banking-chatbot.svg?branch=master)](https://travis-ci.org/IBM/watson-banking-chatbot) -->
+
 <!--Add a new Title and fill in the blanks -->
 # Blockchain Monitoring UI
 In this Code Pattern, we'll use React.js, Watson IoT Platform, and the Hyperledger Fabric Node SDK to interact with an IBM Blockchain service. The resulting application provides a dynamically generated user interface to monitor assets as they traverse through a supply chain. This solution can be applicable for both physical assets (shipping containers, packages) and financial assets.Operators can use this Monitoring UI to perform actions on the blockchain, see the results of those actions, and query the state of each asset in the blockchain ledger.
@@ -65,6 +65,54 @@ When the reader has completed this Code Pattern, they will understand how to:
 
 <!-- TODO expand on this -->
 
+## Install Prerequisites:
+### IBM Cloud CLI
+To interact with the hosted offerings, the IBM Cloud CLI will need to be installed beforehand. The latest CLI releases can be found at the link [here](https://console.bluemix.net/docs/cli/reference/bluemix_cli/download_cli.html#download_install). An install script is maintained at the mentioned link, which can be executed with one of the following commands
+
+```
+# Mac OSX
+curl -fsSL https://clis.ng.bluemix.net/install/osx | sh
+
+# Linux
+curl -fsSL https://clis.ng.bluemix.net/install/linux | sh
+
+# Powershell
+iex(New-Object Net.WebClient).DownloadString('https://clis.ng.bluemix.net/install/powershell')
+```
+After installation is complete, confirm the CLI is working by printing the version like so
+```
+bx -v
+```
+
+### Node.js packages
+If expecting to run this application locally, please continue by installing [Node.js](https://nodejs.org/en/) runtime and NPM. Currently the Hyperledger Fabric SDK only appears to work with node v8.9.0+, but [is not yet supported](https://github.com/hyperledger/fabric-sdk-node#build-and-test) on node v9.0+. If your system requires newer versions of node for other projects, we'd suggest using [nvm](https://github.com/creationix/nvm) to easily switch between node versions. We did so with the following commands
+```
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+# Place next three lines in ~/.bash_profile
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+nvm install v8.9.0
+nvm use 8.9.0
+```
+
+To run the Monitoring UI locally, we'll need to install a few node libraries which are listed in our `package.json` file.
+- [React.js](https://reactjs.org/): Used to simplify the generation of front-end components
+- [MQTT](http://mqtt.org/): Client package to subscribe to Watson IoT Platform and handle incoming messages
+- [Hyperledger Fabric SDK](https://fabric-sdk-node.github.io/): Enables backend to connect to IBM Blockchain service
+
+Install the Monitoring UI node packages by running `npm install` in the project root directory and in the [react-backend](react-backend) directory. Both `python` and `build-essential` are required for these dependencies to install properly:
+```
+npm install
+cd react-backend && npm install
+```
+
+Finally, compile the `bundle.js` file
+```
+cd public
+npm run build
+```
+
 <!--Update this section-->
 ## Included components
 * [Blockchain](https://console.bluemix.net/catalog/services/blockchain)
@@ -90,34 +138,14 @@ https://www.youtube.com/watch?v=Mw6924hCAIc
 
 
 # Steps
-Use the ``Deploy to IBM Cloud`` button **OR** create the services and run locally.
-
-## Deploy to IBM Cloud
-<!--Update the repo and tracking id-->
-TODO, In progress
-[![Deploy to IBM Cloud](https://metrics-tracker.mybluemix.net/stats/527357940ca5e1027fbf945add3b15c4/button.svg)](https://bluemix.net/deploy?repository=https://github.com/IBM/monitoring_ui.git)
-
-1. Press the above ``Deploy to IBM Cloud`` button and then click on ``Deploy``.
-
-<!--optional step-->
-2. In Toolchains, click on Delivery Pipeline to watch while the app is deployed. Once deployed, the app can be viewed by clicking 'View app'.
-![](doc/source/images/toolchain-pipeline.png)
-
-<!--update with service names from manifest.yml-->
-3. To see the app and services created and configured for this Code Pattern, use the IBM Cloud dashboard. The app is named `monitoring-ui` with a unique suffix. The following services will be created:
-    * Blockchain
-    * Internet of Things Platform
-
-## Run locally
-> NOTE: These steps are only needed when running locally instead of using the ``Deploy to IBM Cloud`` button.
-
-<!-- there are MANY updates necessary here, just screenshots where appropriate -->
-1. [Clone the repo](#1-clone-the-repo)
-2. [Create Watson services with IBM Cloud](#2-create-watson-services-with-ibm-cloud)
-3. [Upload and Instantiate Chaincode](#3-import-the-conversation-workspace)
-4. [Install dependencies](#4-load-the-discovery-documents)
-5. [Configure credentials](#5-configure-credentials)
-5. [Run the application](#6-run-the-application)
+There are two methods we can use to deploy the application, either use the ``Deploy to IBM Cloud`` steps **OR** create the services and run locally.
+1. [Clone repository](#1-clone-the-repository)
+2. [Setup repository codebase locally](#2-deploy-application-locally) OR [Deploy to IBM Cloud](#2-deploy-application-to-ibm-cloud)
+3. [Create Watson services with IBM Cloud](#3-create-services)
+4. [Upload and Instantiate Chaincode](#4-upload-and-instantiate-chaincode)
+5. [Start the Application](#5-run-the-application)
+6. [Retrieve service credentials](#6-obtain-service-credentials)
+7. [Configure and run the application](#7-ui-configuration)
 
 ## 1. Clone the repository
 
@@ -127,7 +155,40 @@ Clone the `monitoring_ui` project locally. In a terminal, run:
 git clone github.com/IBM/monitoring_ui
 ```
 
-## 2. Create Services
+## 2. Deploy Application to IBM Cloud
+
+1. To deploy the application to IBM Cloud, we'll need to leverage the IBM Cloud CLI. Ensure the cli is installed using the prerequisites section above, and then run the following command to deploy the application
+```
+bx cf push
+```
+
+2. To see the app and services created and configured for this Code Pattern, use the IBM Cloud dashboard, or run `bx cf apps` and `bx cf services` in the terminal. The app should be named `monitoring-ui` with a unique suffix.
+
+## 2. Deploy Application locally
+Install the Monitoring UI node packages by running `npm install` in the project root directory and in the [react-backend](react-backend) directory. Both `python` and `build-essential` are required for these dependencies to install properly:
+```
+npm install
+cd react-backend && npm install
+```
+
+Finally, compile the `bundle.js` file
+```
+cd public
+npm run build
+```
+
+### Docker setup (optional)
+If you have Docker installed, you can install these dependencies in a virtual container instead. Run the application with the following commands, and then skip to [Step 5](#5-configure-credentials)
+```
+docker build -t monitoring_ui .
+docker run -d -p 8081:8081 monitoring_ui
+```
+
+> NOTE: These steps are only needed when running locally instead of using the ``Deploy to IBM Cloud`` button.
+
+<!-- there are MANY updates necessary here, just screenshots where appropriate -->
+
+## 3. Create Services
 
 Next, we'll need to deploy our service instances using the IBM Cloud dashboard.
 
@@ -222,7 +283,7 @@ After selecting the blockchain icon, a form will be presented for configuring th
 
 If you're manually deploying the application and services, -->
 
-## 3. Upload / Instantiate Chaincode
+## 4. Upload and Instantiate Chaincode
 "Smart contracts", commonly referred to as "Chaincode", can be used to execute business logic and validate incoming requests. In this context, the contracts are used to implement CRUD operations for tracking assets on the IBM Blockchain ledger.
 
 To begin the process of uploading the smart contracts to the blockchain, we can start by opening the IBM Cloud dashboard, selecting your provisioned Blockchain service, and accessing the blockchain network monitor by clicking "Enter Monitor"
@@ -250,20 +311,7 @@ This will present a form where arguments can be provided to the chaincodes `init
 
 For additional documentation on the chaincode implementation, please see the README in the [simple_contract](contracts/basic/simple_contract) directory
 
-## 4. Install dependencies
-
-To start the Monitoring UI, we'll need to install a few node libraries which are listed in our `package.json` file.
-- React.js: Used to simplify the generation of front-end components
-- MQTT: Client package to subscribe to Watson IoT Platform and handle incoming messages
-- Hyperledger Fabric SDK: Enables backend to connect to IBM Blockchain service
-
-### Docker setup (optional)
-If you have Docker installed, you can install these dependencies in a virtual container instead. Run the application with the following commands, and then skip to [Step 5](#5-configure-credentials)
-```
-docker build -t monitoring_ui .
-docker run -d -p 8081:8080 monitoring_ui
-```
-### Manual installation
+<!-- ### Manual installation
 Otherwise, continue by installing [Node.js](https://nodejs.org/en/) runtime and NPM. Currently the Hyperledger Fabric SDK only appears to work with node v8.9.0+, but [is not yet supported](https://github.com/hyperledger/fabric-sdk-node#build-and-test) on node v9.0+. If your system requires newer versions of node for other projects, we'd suggest using [nvm](https://github.com/creationix/nvm) to easily switch between node versions. We did so with the following commands
 ```
 curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
@@ -285,7 +333,7 @@ Finally, compile the `bundle.js` file
 ```
 cd public
 npm run build
-```
+``` -->
 <!-- Method	| Command	|Comment
 --- | --- | ---
 Filesystem | `npm run build` | The build command generates the bundle.js file in the public directory. </br>To access the Monitoring UI, go to the `monitoring_ui/public` directory and open the *index.html* file in a browser. -->
@@ -299,9 +347,7 @@ workspace and select **View details**. Save this ID for later.
 *Optionally*, to view the conversation dialog select the workspace and choose the
 **Dialog** tab, here's a snippet of the dialog: -->
 
-![](doc/source/images/dialog.PNG)
-
-## 4. Run the application
+## 5. Run the application
 
 1. Start the app locally with `npm run dev-server`.
 
@@ -318,7 +364,7 @@ workspace and select **View details**. Save this ID for later.
 
 <!--Include any troubleshooting tips (driver issues, etc)-->
 
-## 5. Obtain credentials
+## 6. Obtain service credentials
 
 The credentials for IBM Cloud services (Blockchain, Watson IoT Platform), can be found in the ``Services`` menu in IBM Cloud by selecting the ``Service Credentials`` option for each service.
 
@@ -368,7 +414,7 @@ TONE_ANALYZER_PASSWORD=<add_tone_analyzer_password>
 
 ``` -->
 
-## 6. UI Configuration
+## 7. UI Configuration
 
 Before we're able to access blockchain information via the Monitoring UI, we'll need to provide a bit of information about our Blockchain service, such as the API credentials/endpoint, and chaincode information.
 
