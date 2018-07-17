@@ -2,17 +2,17 @@
 [`payloadSchema.json`](../payloadSchema.json "the contract schema for API and object model")
 
 ##Introduction
-As referenced in other documents in this folder, the REST messaging protocol for communicating with the block chain and with smart contracts is documented in a file called 
-[`rest_api.json`](https://github.com/hyperledger/fabric/blob/master/core/rest/rest_api.json "on hyperledger project in github.com"). This file documents all service end points to which a client application can GET, PUT and POST messages.
+As referenced in other documents in this folder, the REST messaging protocol for communicating with the block chain and with smart contracts is documented in a file called
+[`rest_api.json`](https://github.com/hyperledger-archives/fabric/blob/master/core/rest/rest_api.json) on hyperledger project in github.com. This file documents all service end points to which a client application can GET, PUT and POST messages.
 
-This document describes the schema file - 
-[`payloadschema.json`](../payloadschema.json "in this folder hierarchy"), documenting the payloads carried by RESTful messages specifically for execution by a smart contract. 
+This document describes the schema file -
+[`payloadschema.json`](../payloadschema.json "in this folder hierarchy"), documenting the payloads carried by RESTful messages specifically for execution by a smart contract.
 
-This payload schema describes both the contract's API and its data model. The schema is 
+This payload schema describes both the contract's API and its data model. The schema is
 [JSON Schema 4](http://json-schema.org/ "JSON Schema 4 specifications on the web") compatible
-and works with compatible tools. (See the generic UI referenced below.) 
+and works with compatible tools. (See the generic UI referenced below.)
 
-The contract API follows a CRUD-like pattern that, combined with other important patterns, have proven useful in contract development with a strong IoT component. Read the 
+The contract API follows a CRUD-like pattern that, combined with other important patterns, have proven useful in contract development with a strong IoT component. Read the
 [tutorial on contract patterns](TutorialSmartContractPatterns.md "explains the key patterns on which the trade lane sample contract is based") for more information on how the schema APIs, data model, and IoT Platform offer an end to end environment for IoT applications.
 
 >*Note that we maintain a semblance of Swagger compatibility in order that the [Swagger editor](http://editor.swagger.io/#/ "on the web") can be used to explore the schema, but Swagger supports only a small subset of JSON Schema 4 and so is not as useful as it could otherwise be when describing payloads. It is rigidly oriented towards resource-oriented RESTful APIs and the JSON-RPC flavour of the hyperledger chaincode (a.k.a. smart contract) API is not a perfect fit. Swagger's editor is not needed, though, for error checking of the schema. This is covered in the next section*
@@ -48,18 +48,18 @@ Generate Go SAMPLE file samples.go for:
 The output specifies what the script generated based on the commands in the JSON configuration file.
 
 ##Schema File Generation
-When the unmarshal test is successful, the script generates contract-consumable Go files named 
+When the unmarshal test is successful, the script generates contract-consumable Go files named
 [`schemas.go`](schemas.go "in the main contract folder") and
 [`samples.go`](samples.go "in the main contract folder"). These automatically become part of the contract build.
 
 The exported data structures are then exposed to clients through a pair of APIs, which by convention are named `getAssetSchemas` and `getAssetSamples` (as implemented in this sample contract).
 
-Clients can make these calls and use them as desired. Examples include displaying samples of specific APIs or data inputs or outputs for debugging purposes (a useful way to explore a running contract without accessing its source code), mapping device inputs dynamically (which is how the IoT Platform Proxy can offer mapping services from any device to any contract), and validating parameters (although there are also good reasons for flexibility with properties accepted in state changing API). 
+Clients can make these calls and use them as desired. Examples include displaying samples of specific APIs or data inputs or outputs for debugging purposes (a useful way to explore a running contract without accessing its source code), mapping device inputs dynamically (which is how the IoT Platform Proxy can offer mapping services from any device to any contract), and validating parameters (although there are also good reasons for flexibility with properties accepted in state changing API).
 
-To see a generic GUI in action, explore the [generic UI](https://github.com/ibm-watson-iot/blockchain-samples/tree/master/generic_ui "on github") and watch as the UI self-initializes from the schema. 
+To see a generic GUI in action, explore the [generic UI](https://github.com/ibm-watson-iot/blockchain-samples/tree/master/generic_ui "on github") and watch as the UI self-initializes from the schema.
 
-The selection of APIs and objects that appear in the returned schemas or samples are configured in the script's companion [JSON configuration file](scripts/generate.json "in the scripts folder"). 
-When extending the sample contract for a specific domain, client applications can rely on these APIs being accurate if the schema file is maintained and a few conventions are followed. 
+The selection of APIs and objects that appear in the returned schemas or samples are configured in the script's companion [JSON configuration file](scripts/generate.json "in the scripts folder").
+When extending the sample contract for a specific domain, client applications can rely on these APIs being accurate if the schema file is maintained and a few conventions are followed.
 
 Summary of conventions that enable integration with the IoT Platform and generic tooling:
 + implement getAssetSchemas
@@ -71,7 +71,7 @@ Summary of conventions that enable integration with the IoT Platform and generic
 There is more to customizing the contract than meets the eye, so this information is gathered in the [tutorial on customizing the sample contract](docs/CustomizingTheSampleContract.md "explains how to extend the sample contract for your own domain").
 
 #Additional Information: Wiring the Contract into the Fabric
-The API for a contract has been updated for the hyperledger project to a 
+The API for a contract has been updated for the hyperledger project to a
 [JSON RPC](http://json-rpc.org/ "http://json-rpc.org/") compatible REST messaging protocol. The endpoint for these messages is:
 
 - /chaincode
@@ -147,6 +147,6 @@ Contract API is represented as objects inside the API object with names to match
 
 Note that this does not intend to replace the JSON RPC schema for the outer JSON RPC protocol, but rather the embedded contract API.
 
-The schema can be explored in the Swagger editor, but Swagger errors on choice verbs like `oneIf` must be ignored. It can show the API options and allow you to drill down into the parameters etc. This is sometimes useful for interactive learning, but in fact the schema can be generated in its entirety and explored on the screen. 
+The schema can be explored in the Swagger editor, but Swagger errors on choice verbs like `oneIf` must be ignored. It can show the API options and allow you to drill down into the parameters etc. This is sometimes useful for interactive learning, but in fact the schema can be generated in its entirety and explored on the screen.
 
 The contract API approximates JSON-RPC compatibility withint the limits of the payload definitions to which we are restricted by hyperledger. There are plugins for `react` and `angular` that can interpret the schema and generate forms etc. These can be seen in the UI folders in this project.

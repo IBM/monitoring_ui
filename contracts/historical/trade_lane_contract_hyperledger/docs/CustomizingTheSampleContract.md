@@ -4,23 +4,23 @@ Please read the document [Hyperledger Contracts Introduction to Best Practices a
 ## Introduction
 This generic IoT sample smart contract is intended as a template in the spirit of a well-featured *hello world*. It contains customizations that simulate a simple trade lane scenario: shipping a consignment in an identifiable container or package between locations. There can be many such simultaneous shipments.
 
-This contract tracks some of the key parameters in a simple fulfillment scenario: 
+This contract tracks some of the key parameters in a simple fulfillment scenario:
 
 ![Simple Fullfilment per UBL 2.1.10](http://docs.oasis-open.org/ubl/os-UBL-2.1/art/UBL-2.1-Fulfilment-1simple.png "Universal Business Language 2.1 Specification")
 
 > See [UBL 2.1.10](http://docs.oasis-open.org/ubl/os-UBL-2.1/UBL-2.1.html#S-SHIPMENT-CONSIGNMENT) for a description of the many possible relationships between shipments and consignments.   
 
 ###Scenario
-For simplicity, the consignment, shipper, receiver, consignor and consignee are not identified. The container / package *is* tracked and identified by `assetID` as per the singleton contract instance and multiple managed asset patterns used in this contract. The container's location and temperature are tracked and the carrier that bears responsibility is followed through events that set a new carrier whenever it changes. 
+For simplicity, the consignment, shipper, receiver, consignor and consignee are not identified. The container / package *is* tracked and identified by `assetID` as per the singleton contract instance and multiple managed asset patterns used in this contract. The container's location and temperature are tracked and the carrier that bears responsibility is followed through events that set a new carrier whenever it changes.
 
-The event stream is fluid and there is no formal state machine with a managed set of statuses. For example, the contract does not track statuses like `idle`, `packing`, `loading`, `shipped`, `arrived`, and so on. 
+The event stream is fluid and there is no formal state machine with a managed set of statuses. For example, the contract does not track statuses like `idle`, `packing`, `loading`, `shipped`, `arrived`, and so on.
 
-The container is considered to be moving when location events are received. It is considered contain frozen goods when temperature events are received. This because the contract has an explicit rule that throws the `OVERTEMP` alert when the temperature exceeds 0 degrees Celsuis exclusive. Carrier events are sent when a new carrier assumes reponsibility, which implies that the container has been moved. The state machine is can be thought of as *implied* in this sample. 
+The container is considered to be moving when location events are received. It is considered contain frozen goods when temperature events are received. This because the contract has an explicit rule that throws the `OVERTEMP` alert when the temperature exceeds 0 degrees Celsuis exclusive. Carrier events are sent when a new carrier assumes reponsibility, which implies that the container has been moved. The state machine is can be thought of as *implied* in this sample.
 
 ###Asset State Management
-This sample makes use of the *partial state as event* pattern as introduced in the document [*introduction to hyperledger best practices and patterns*](./HyperledgerContractsIntroBestPracticesPatterns.md). Events arrive ad hoc with the asset state remembering each property as last set by an event. 
+This sample makes use of the *partial state as event* pattern as introduced in the document [*introduction to hyperledger best practices and patterns*](./HyperledgerContractsIntroBestPracticesPatterns.md). Events arrive ad hoc with the asset state remembering each property as last set by an event.
 
-In other words, an asset's state builds up as events are received. This pattern allows  creation or update events like `createAsset` or `updateAsset` to carry any combination of the writable properties of the state. 
+In other words, an asset's state builds up as events are received. This pattern allows  creation or update events like `createAsset` or `updateAsset` to carry any combination of the writable properties of the state.
 
 > Events received by the `updateAsset` function will automatically redirect to the `createAsset` function by default if the asset is not found. This behavior can be changed (as in toggled off or on) with this message:
 
@@ -43,7 +43,7 @@ In other words, an asset's state builds up as events are received. This pattern 
 }
 ```
 
-The asset state is essentially the same when a carrier, a temperature and a geo location all arrive as discrete events, or when a single event arrives carrying all three properties. 
+The asset state is essentially the same when a carrier, a temperature and a geo location all arrive as discrete events, or when a single event arrives carrying all three properties.
 
 ###Rules and Alerts
 Differences that can be observed between these two scenarios are related to the calculated alert status in this contract:
@@ -70,18 +70,18 @@ And so this contract specifically defines these behaviors:
 
 Of course, should the lack of a temperature property be an alertable condition, then the rule should raise an alert (e.g. `MISSINGTEMP`) when a temperature is missing for a specified period of time.
 
-In a more elaborate contract, a consignment would be modelled explicitly as a member of the container's contents manifest. Each consignment could be typed in some way with defined thresholds, making alerts sensitive to the consignment type. 
+In a more elaborate contract, a consignment would be modelled explicitly as a member of the container's contents manifest. Each consignment could be typed in some way with defined thresholds, making alerts sensitive to the consignment type.
 - Defining types known to the rule with associated thresholds has many ways of becoming complex and brittle. Built-in constants would be the obvious approach, but that is inflexible - especially when new goods types and associate thresholds appear. Injecting a new data model from outside is an option, but is beyond the scope of this tutorial.
 
-Or the consignment could have an explicit temperature threshold set from the application such that the rule is sensitive to the threshold's presence or absence and uses the threshold when present to calculate compliance for that consignment. 
-- Allowing the application to set the threshold makes sense in several ways: the user that is managing the loading has the best idea of what the consignment contains and can apply some level of external checking to ensure the most appropriate alert threshold; and the contract has no limitations as to types of goods or thresholds to be applied. The contract is entirely flexible. 
+Or the consignment could have an explicit temperature threshold set from the application such that the rule is sensitive to the threshold's presence or absence and uses the threshold when present to calculate compliance for that consignment.
+- Allowing the application to set the threshold makes sense in several ways: the user that is managing the loading has the best idea of what the consignment contains and can apply some level of external checking to ensure the most appropriate alert threshold; and the contract has no limitations as to types of goods or thresholds to be applied. The contract is entirely flexible.
 
 ##System Engineering Considerations
-A blockchain provides a distributed, resilient, indelible, auditable, transparent, and shared ledger that can build trust in trustless environments. An example is a system built for collaboration between competitors and regulatory agencies. Blockchains come with performance-related constraints owing to the inherent delays and state hysteresis in systems where transactions are committed to blocks and world state *only after they achieve consensus*. 
+A blockchain provides a distributed, resilient, indelible, auditable, transparent, and shared ledger that can build trust in trustless environments. An example is a system built for collaboration between competitors and regulatory agencies. Blockchains come with performance-related constraints owing to the inherent delays and state hysteresis in systems where transactions are committed to blocks and world state *only after they achieve consensus*.
 
-There is an architectural balance to be struck in the system's data model. Data stored in world state is subject to consensus delays (that manifests as hysteresis between transaction execution and state availability to queries) while data stored in back-office servers is typically not. 
+There is an architectural balance to be struck in the system's data model. Data stored in world state is subject to consensus delays (that manifests as hysteresis between transaction execution and state availability to queries) while data stored in back-office servers is typically not.
 
-This behavior affects both the speed and volume at which data can be added to the blockchain, and the responsiveness of applications that interact with either the back-office or the blockchain is therefore different and will feel at times variable. 
+This behavior affects both the speed and volume at which data can be added to the blockchain, and the responsiveness of applications that interact with either the back-office or the blockchain is therefore different and will feel at times variable.
 
 Further, a *fire-hose* of real-time data from an IoT device will overwhelm a blockchain, but streams of processed data with redundancy removed and at an appropriate cadence will work. But do note that, in cases where immediate real-time access to posted data is a requirement, a blockchain will not be likely to meet the goal.
 
@@ -94,20 +94,20 @@ This sample contract therefore assumes a simplified scenario such that:
   - by polling world state, the inherent hysteresis is no longer a concern for most functions
 
 ##A Simple Customization
-The simplest possible customizations involve changes mainly to the data model and related rules. This will be common when a system or application uses a blockchain to store a record of device events and asset states without performing complex business operations. 
+The simplest possible customizations involve changes mainly to the data model and related rules. This will be common when a system or application uses a blockchain to store a record of device events and asset states without performing complex business operations.
 
-This sample contract is one such data-centric implementation in that the primary application-specific logic is the handling of alerts for temperatures exceeding a threshold. 
+This sample contract is one such data-centric implementation in that the primary application-specific logic is the handling of alerts for temperatures exceeding a threshold.
 
-Te *partial state as event* pattern is therefore the primary event and state processing algorithm used in this contract sample, and is the default processing that is inherited by derived contracts that use this sample as a template. 
+Te *partial state as event* pattern is therefore the primary event and state processing algorithm used in this contract sample, and is the default processing that is inherited by derived contracts that use this sample as a template.
 
-So as assets move from place to place, the contract receives location updates, temperature updates and occasionally transfers of custodianship. Events therefore contain any combination of temperature, geo location, carrier and RFC3339nano timestamp properties. 
+So as assets move from place to place, the contract receives location updates, temperature updates and occasionally transfers of custodianship. Events therefore contain any combination of temperature, geo location, carrier and RFC3339nano timestamp properties.
 
-As discussed above, the temperature rule's behavior can be improved by the addition of a threshold that is specific to the container contents. To keep the tutorial simple, a threshold property is added to asset state for the container only. The `OVERTEMP` rule is adjusted to become sensitive to the presence or absence of the new threshold property. 
+As discussed above, the temperature rule's behavior can be improved by the addition of a threshold that is specific to the container contents. To keep the tutorial simple, a threshold property is added to asset state for the container only. The `OVERTEMP` rule is adjusted to become sensitive to the presence or absence of the new threshold property.
 
 > Adding the threshold property as an event requires no specialized logic as the deep merge of event into state handles the new property. The combined asset state is presented to the rules engine before committing to the ledger so that the adjusted `OVERTEMP` rule can now see the temperature and the new threshold.
 
 ###Schema Change
-Two changes are required in the [schema](../payloadSchema.go): 
+Two changes are required in the [schema](../payloadSchema.go):
  - add the `threshold` property to the event object
  - copy it to the state object
 
@@ -192,7 +192,7 @@ After:
 ```
 
 ### Rule Change
-Once the threshold is added to the data model, the `OVERTEMP` rule can become sensitive to it. 
+Once the threshold is added to the data model, the `OVERTEMP` rule can become sensitive to it.
 
 > The goal in this style of contract is to build up asset state from incoming events, storing the calculated state in *world state*. Just before the state calculation is completed, the rules engine is run against the new asset state, which must raise or clear its specific alert for the target asset.
 
@@ -283,7 +283,7 @@ vagrant@hyperledger-devenv:v0.0.9-5cd67fd:/local-dev/github.ibm.com/blockchain-s
 There is no output when it works.
 
 ##Testing the New Contract
-The author assumes that the reader has been through the [sandbox document](https://github.com/hyperledger/fabric/blob/master/docs/API/SandboxSetup.md) and has been able to build and run the peer and the contract in two separate terminal windows.
+The author assumes that the reader has been through the [testing documentation document](http://hyperledger-fabric.readthedocs.io/en/release-1.1/chaincode4ade.html#install-hyperledger-fabric-samples) and has been able to build and run the peer and the contract in two separate terminal windows.
 
 > Tips:
 
@@ -336,7 +336,7 @@ The logs will show that the contract executed, the nickname *THRESHOLD* standing
 2016/05/16 06:50:24 [THRESHOLD-4.0] INFO Contract initialized
 ```
 
-To test the threshold, we will need an asset with a threshold in it. We will use `ASSET1` and `100` as the values. No other data will be sent in the initial event. 
+To test the threshold, we will need an asset with a threshold in it. We will use `ASSET1` and `100` as the values. No other data will be sent in the initial event.
 
 ``` json`
 {
@@ -403,11 +403,11 @@ Queries return the entire response immediately:
 }
 ```
 
-> The JSON RPC 2.0 envelope for contract payloads stringifies inputs and outputs, which shows up as escaped strings. This means that the examples from POSTMAN cannot display objects in *pretty* format. 
+> The JSON RPC 2.0 envelope for contract payloads stringifies inputs and outputs, which shows up as escaped strings. This means that the examples from POSTMAN cannot display objects in *pretty* format.
 
 The `threshold` tag is clearly visible and its value is 100 degrees Calcuis. The contract shows as being in compliance, since there is no temperature event so far. With nothing to calculate, the rule must clear the alert.
 
-Now we will send a temperature of 99 and the contract will show as being in compliance again. 
+Now we will send a temperature of 99 and the contract will show as being in compliance again.
 
 >From here on, `updateAsset` and `readAsset` calls are used but the response from the invoke and the command for the query are left out as unnecessary detail.
 
@@ -441,7 +441,7 @@ Now we will send a temperature of 99 and the contract will show as being in comp
 
 The temperature has now shown up and is below the threshold, so the contract remains in compliance.
 
-And finally, we send the event with temperature as 101 and the contract will go out of compliance. 
+And finally, we send the event with temperature as 101 and the contract will go out of compliance.
 
 ``` json
 {
@@ -471,11 +471,11 @@ And finally, we send the event with temperature as 101 and the contract will go 
 }
 ```
 
-- The temperature now shows 101, which is above the threshold of 100. Thus, we now see the `OVERTEMP` alert as both raised and active. 
+- The temperature now shows 101, which is above the threshold of 100. Thus, we now see the `OVERTEMP` alert as both raised and active.
   - Raised means that this specific event raised the alert by changing it from inactive state to active state, and active says that the temperature for this asset is too high at this point in time.
 - The `incompliance` property is now missing, which means that the asset is no longer compliant with the terms in the contract.
 
 ##Conclusion
-This was a basic introduction to customization. The desceptively simple changes in this article add a significant feature to the contract in that it can now deal with temperatures that are specific to an asset's cargo.
+This was a basic introduction to customization. The deceptively simple changes in this article add a significant feature to the contract in that it can now deal with temperatures that are specific to an asset's cargo.
 
 The flexibility and simplicity of the *partial state as event* pattern makes data-driven contracts easy to construct and maintain and should be the default design until it fails to meet the goals of the contract.

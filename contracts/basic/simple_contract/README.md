@@ -37,7 +37,7 @@ To create a simple contract to create, read, update, and delete asset data, use 
 |'readAssetSchemas'|The methods and associated properties of the JSON schema contract|  
 |'readAssetSamples'|An example of the sample JSON data|
 
-For more information about setting up REST and Swagger, see [here](https://github.com/hyperledger/fabric/blob/master/docs/API/CoreAPI.md).
+For more information about setting up REST and Swagger, see [here](https://github.com/hyperledger-archives/fabric/blob/master/docs/API/CoreAPI.md).
 
 ## Requirements
 
@@ -463,9 +463,9 @@ When you complete all of the required steps in [Developing your IBM Blockchain h
 
 As mentioned earlier, IBM Blockchain understands `deploy`, `invoke`, and `query` calls, of which must contain a JSON string as input. The input string must also include a Function key and an Args key. The Function key is the name of the actual function you are calling, and the Args are the arguments you want to pass on to it.
 
-There are several IBM Blockchain resources in GitHub that explain in more detail how you can set up the [DevNet](https://github.com/hyperledger/fabric/blob/master/docs/dev-setup/devnet-setup.md) and [Sandbox](https://github.com/hyperledger/fabric/blob/master/docs/API/SandboxSetup.md) environments, and also how to test contracts in the command line. The Sandbox environment is particularly useful for writing new contracts or modifying existing ones as it provides you with an environment to test and debug chaincode without needing to set up a complete IBM Bluemix Hyperledger network. Let's see some examples of the command-line and rest calls to our sample chaincode.
+There are several IBM Blockchain resources in GitHub that explain in more detail how you can set up the [DevNet](https://github.com/hyperledger-archives/fabric/blob/master/docs/dev-setup/devenv.md) environment, and also how to test contracts in the command line. The Sandbox environment is particularly useful for writing new contracts or modifying existing ones as it provides you with an environment to test and debug chaincode without needing to set up a complete IBM Bluemix Hyperledger network. Let's see some examples of the command-line and rest calls to our sample chaincode.
 
-When the network is running, the contract is built, and your instance is registered, you can start calling the contract that you created. If you are using Swagger or another REST interface, the HTTP server and the Swagger or Node.js must be set up as outlined [here](https://github.com/hyperledger/fabric/blob/master/docs/API/CoreAPI.md). 	
+When the network is running, the contract is built, and your instance is registered, you can start calling the contract that you created. If you are using Swagger or another REST interface, the HTTP server and the Swagger or Node.js must be set up as outlined [here](https://github.com/hyperledger-archives/fabric/blob/master/docs/API/CoreAPI.md). 	
 
 ### Contract calls
 **Note:** In the Sandbox, you can specify the contract instance name. In a real peer network, when you register the contract, it will have a lengthy alphanumeric name that is returned by the network and that is the name that you must use. Alternately you can use the GitHub path to point to the contract.
@@ -585,4 +585,4 @@ After you create your contract, deploy it to your blockchain (IBM Blockchain or 
 
 There are more sample contracts available for download in the IBM Blockchain samples folder on [GitHub](https://github.com/ibm-watson-iot/blockchain-samples). Experiment with the available samples, for example, the Trade Lane blockchain contract. Use the samples to enhance your Blockchain smart contracts further.
 
-IBM Blockchain also provides a sandbox environment for you to test contract code before deploying it to your peer network. For more information about how to set up the sandbox environment, see [Writing, building, and running chaincode in a development environment](https://github.com/hyperledger/fabric/blob/master/docs/API/SandboxSetup.md).
+IBM Blockchain also provides a sandbox environment for you to test contract code before deploying it to your peer network. For more information about how to set up the sandbox environment, see [Writing, building, and running chaincode in a development environment](http://hyperledger-fabric.readthedocs.io/en/release-1.1/chaincode4ade.html#install-hyperledger-fabric-samples).
