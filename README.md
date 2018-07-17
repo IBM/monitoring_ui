@@ -152,7 +152,7 @@ There are two methods we can use to deploy the application, either use the ``Dep
 Clone the `monitoring_ui` project locally. In a terminal, run:
 
 ```
-git clone github.com/IBM/monitoring_ui
+git clone https://github.com/IBM/monitoring_ui.git
 ```
 
 ## 2. Deploy Application to IBM Cloud
@@ -449,7 +449,8 @@ Once this endpoint is invoked, it will call a series of methods to carry out the
 <img src="https://i.imgur.com/5ZRGcux.png" width="450" height="350" style="margin-left: auto; margin-right: auto;">
 </p>
 </br>
-The certificate will need to be manually uploaded to one of the blockchain peers via the blockchain network monitor. A "[peer](http://hyperledger-fabric.readthedocs.io/en/release-1.1/peers/peers.html)" is a member of a blockchain network that's responsible for hosting copies of the ledger and chaincode. These are the primary interaction endpoint for both administrators and members with limited access. For a client to carry out administrative requests, they must have a PEM certificate that has been uploaded to the peer. The chaincode operations will not work until this step has been completed.
+
+The certificate will need to be manually uploaded to one of the blockchain peers via the blockchain network monitor. A [peer](http://hyperledger-fabric.readthedocs.io/en/release-1.1/peers/peers.html) is a member of a blockchain network responsible for hosting copies of the ledger and chaincode. These are the primary interaction endpoint for both administrators and members with limited access. For a client to carry out administrative requests, they must have a PEM certificate that has been uploaded to the peer. The chaincode operations will not work until this step has been completed.
 
 This can be done by going back to the IBM Cloud dashboard, selecting your provisioned Blockchain service, and accessing the blockchain network monitor by clicking "Enter Monitor"
 <p align="center">
@@ -539,7 +540,6 @@ using the default configuration. -->
 # Links
 Blockchain Supply Chain articles
 - https://aqurus.ca/blockchain-crucial-link-supply-chain/
-- https://medium.com/scandinavian-cryptocurrency-exchange/how-blockchain-technology-can-optimize-product-supply-chains-53164a11a1ba
 
 Tutorial to scanned barcode result to Watson IoT Platform
 - https://www.kevinhoyt.com/2016/11/09/tessel-barcode-scanner-software/
