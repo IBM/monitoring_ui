@@ -21,20 +21,20 @@ When the reader has completed this Code Pattern, they will understand how to:
 
 ```json
 {
-    jsonrpc: '2.0',
-    method: 'invoke',
-    params: {
-        type: 1,
-        chaincodeID: {
-            name: 'simple_contract'
+    'jsonrpc': '2.0',
+    'method': 'invoke',
+    'params': {
+        'type': 1,
+        'chaincodeID': {
+            'name': 'simple_contract'
         },
-        ctorMsg: {
-            function: 'createAsset',
-            args: '["assetID", {"carrier": "Port of Long Beach", "longitude":"33.754185", "latitude": "-118.216458", "temperature": "44 F"}]'
+        'ctorMsg': {
+            'function': 'createAsset',
+            'args': '["assetID", {"carrier": "Port of Long Beach", "longitude":"33.754185", "latitude": "-118.216458", "temperature": "44 F"}]'
         },
-        secureContext: 'kkbankol@us.ibm.com'
+        'secureContext': 'kkbankol@us.ibm.com'
     },
-    id: 5
+    'id': 5
 }
 ```
 
