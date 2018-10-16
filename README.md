@@ -48,7 +48,7 @@ When the reader has completed this Code Pattern, they will understand how to:
 
 ## Install Prerequisites:
 ### IBM Cloud CLI
-To interact with the hosted offerings, the IBM Cloud CLI will need to be installed beforehand. The latest CLI releases can be found at the link [here](https://console.bluemix.net/docs/cli/reference/bluemix_cli/download_cli.html#download_install). An install script is maintained at the mentioned link, which can be executed with one of the following commands.
+To interact with the hosted offerings, the IBM Cloud CLI will need to be installed beforehand. The latest CLI releases can be found at the link [here](https://console.bluemix.net/docs/cli/reference/ibmcloud/download_cli.html#download_install). An install script is maintained at the mentioned link, which can be executed with one of the following commands.
 
 ```bash
 # Mac OSX
@@ -64,7 +64,7 @@ iex(New-Object Net.WebClient).DownloadString('https://clis.ng.bluemix.net/instal
 After installation is complete, confirm the CLI is working by printing the version like so
 
 ```bash
-bx -v
+ibmcloud -v
 ```
 
 ### Node.js packages
@@ -139,10 +139,10 @@ git clone https://github.com/IBM/monitoring_ui.git
 1. To deploy the application to IBM Cloud, we'll need to leverage the IBM Cloud CLI. Ensure the cli is installed using the prerequisites section above, and then run the following command to deploy the application.
 
 ```bash
-bx cf push
+ibmcloud cf push
 ```
 
-2. To see the app and services created and configured for this Code Pattern, use the IBM Cloud dashboard, or run `bx cf apps` and `bx cf services` in the terminal. The app should be named `monitoring-ui` with a unique suffix.
+2. To see the app and services created and configured for this Code Pattern, use the IBM Cloud dashboard, or run `ibmcloud cf apps` and `ibmcloud cf services` in the terminal. The app should be named `monitoring-ui` with a unique suffix.
 
 ## 2. Deploy Application locally
 Install the Monitoring UI node packages by running `npm install` in the project root directory and in the [react-backend](react-backend) directory. Both `python` and `build-essential` are required for these dependencies to install properly:
