@@ -100,8 +100,8 @@ npm run build
 ```
 
 ## Included components
-* [Blockchain](https://console.bluemix.net/catalog/services/blockchain)
-* [Watson IoT Platform](https://console.bluemix.net/catalog/services/internet-of-things-platform)
+* [Blockchain](https://cloud.ibm.com/catalog/services/blockchain)
+* [Watson IoT Platform](https://cloud.ibm.com/catalog/services/internet-of-things-platform)
 
 ## Featured technologies
 * [Hyperledger Fabric](https://hyperledger-fabric.readthedocs.io/en/release-1.1/)
@@ -176,7 +176,7 @@ Next, we'll need to deploy our service instances using the IBM Cloud dashboard.
 ### Watson IoT Platform
 We can start by deploying an instance of the Watson IoT Service. In this pattern, the primary role of this service is to offer an secure MQTT broker that'll receive asset updates from IoT devices. Our Monitoring UI subscribes to the MQTT broker and processes incoming messages with the fabric-client node SDK.
 
-First, log into the IBM Cloud dashboard at [https://console.bluemix.net/](https://console.bluemix.net/) and select the "Catalog" button in the upper right.
+First, log into the IBM Cloud dashboard at [https://cloud.ibm.com/](https://cloud.ibm.com/) and select the "Catalog" button in the upper right.
 
 ![](https://i.imgur.com/0CctlyI.png)
 
