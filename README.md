@@ -1,11 +1,11 @@
 # Blockchain Monitoring UI
 
-In this Code Pattern, we'll use React.js, Watson IoT Platform, and the Hyperledger Fabric Node SDK to interact with an IBM Blockchain service. The resulting application provides a dynamically generated user interface to monitor assets as they traverse through a supply chain. This solution can be applicable for both physical assets (shipping containers, packages) and financial assets.Operators can use this Monitoring UI to perform actions on the blockchain, see the results of those actions, and query the state of each asset in the blockchain ledger.
+In this Code Pattern, we'll use React.js, Watson IoT Platform, and the Hyperledger Fabric Node SDK to interact with an IBM Blockchain service. The resulting application provides a dynamically generated user interface to monitor assets as they traverse through a supply chain. This solution can be applicable for both physical assets (shipping containers, packages) and financial assets. Operators can use this Monitoring UI to perform actions on the blockchain, see the results of those actions, and query the state of each asset in the blockchain ledger.
 
 When the reader has completed this Code Pattern, they will understand how to:
 
 * Deploy a Hyperledger Blockchain network on IBM Cloud
-* Create and enroll a administrative client using the Hyperledger Node SDK
+* Create and enroll an administrative client using the Hyperledger Node SDK
 * Deploy and Instantiate a smart contract to handle asset updates/queries
 * Create a schema describing the properties of an asset
 * Monitor and propose blockchain transactions via a UI
@@ -228,32 +228,32 @@ mqtt_pub -i "d:${organization_id}:${device_type}:${device_id}" -u "${username}" 
 }'
 ```
 
-And the we can see that message has been received by the IoT Platform dashboard by going back to the "Devices" menu, selecting our corresponding device, and then selecting "Recent Events".
+And then we can see that message has been received by the IoT Platform dashboard by going back to the `Devices` menu, selecting our corresponding device, and then selecting `Recent Events`.
 
 ![](https://i.imgur.com/lNJ668W.png)
 
 ### Blockchain
 
-We can continue on by deploying the IBM Blockchain service. This can be found by logging in to the IBM Cloud [dashboard](https://console.bluemix.net/), selecting the "Catalog" button, searching for "Blockchain", and clicking on the resulting icon. Or click this [*link*](https://console.bluemix.net/catalog/services/blockchain).
+We can continue on by deploying the IBM Blockchain service. This can be found by logging in to the IBM Cloud [dashboard](https://console.bluemix.net/), selecting the `Catalog` button, searching for "Blockchain", and clicking on the resulting icon. Or click this [*link*](https://console.bluemix.net/catalog/services/blockchain).
 
 ![](https://i.imgur.com/qWQOXq5.png)
 
-After selecting the blockchain icon, a form will be presented for configuring the service name, region, and pricing plan. The default values for these fields can be left as is. Also, be sure that the free pricing tier is selected, which is titled "Starter Membership Plan". If you are using an IBM Cloud Lite account, this plan can be used for free for up to 30 days. After validating that the information in the form is correct, scroll down and click the "Create" button in the lower right corner.
+After selecting the blockchain icon, a form will be presented for configuring the service name, region, and pricing plan. The default values for these fields can be left as is. Also, be sure that the free pricing tier is selected, which is titled `Starter Membership Plan`. If you are using an IBM Cloud Lite account, this plan can be used for free for up to 30 days. After validating that the information in the form is correct, scroll down and click the `Create` button in the lower right corner.
 
 ![](https://i.imgur.com/ROAjOzr.png)
 
 ## 4. Upload and Instantiate Chaincode
 "Smart contracts", commonly referred to as "Chaincode", can be used to execute business logic and validate incoming requests. In this context, the contracts are used to implement CRUD operations for tracking assets on the IBM Blockchain ledger.
 
-To begin the process of uploading the smart contracts to the blockchain, we can start by opening the IBM Cloud dashboard, selecting your provisioned Blockchain service, and accessing the blockchain network monitor by clicking "Enter Monitor".
+To begin the process of uploading the smart contracts to the blockchain, we can start by opening the IBM Cloud dashboard, selecting your provisioned Blockchain service, and accessing the blockchain network monitor by clicking `Enter Monitor`.
 
 ![](https://i.imgur.com/J2pbo7H.png)
 
-Next, click the "Install code" option on the left hand menu, and then the "Install Chaincode" button on the right of the page.
+Next, click the `Install code` option on the left hand menu, and then the `Install Chaincode` button on the right of the page.
 
 ![](https://i.imgur.com/HmdDsgm.png)
 
-Enter an id and a version (here we'll use "simple_contract" and "v1"). Then, select the "Add Files" button to upload the [samples.go](contracts/basic/simple_contract/samples.go), [schemas.go](contracts/basic/simple_contract/schemas.go), and [simple_contract_hyperledger.go](contracts/basic/simple_contract/simple_contract_hyperledger.go) files.
+Enter an id and a version (here we'll use "simple_contract" and "v1"). Then, select the `Add Files` button to upload the [samples.go](contracts/basic/simple_contract/samples.go), [schemas.go](contracts/basic/simple_contract/schemas.go), and [simple_contract_hyperledger.go](contracts/basic/simple_contract/simple_contract_hyperledger.go) files.
 
 ![](https://i.imgur.com/nYwMM47.png)
 
