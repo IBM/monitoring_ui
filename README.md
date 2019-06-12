@@ -240,18 +240,26 @@ We can continue on by deploying the IBM Blockchain service. This can be found by
 
 After selecting the blockchain icon, a form will be presented for configuring the service name, region, and pricing plan. The default values for these fields can be left as is. Also, be sure that the free pricing tier is selected, which is titled `Starter Membership Plan`. If you are using an IBM Cloud Lite account, this plan can be used for free for up to 30 days. After validating that the information in the form is correct, scroll down and click the `Create` button in the lower right corner.
 
-![](https://i.imgur.com/ROAjOzr.png)
+To begin the process of uploading the smart contracts, we can start by opening the Bluemix UI, selecting your provisioned Blockchain service, and accessing the blockchain network monitor by clicking ``Enter Monitor``
+<p align="center">
+<img src="https://i.imgur.com/J2pbo7H.png"  data-canonical-src="https://i.imgur.com/J2pbo7H.png" width="650" height="450" style="margin-left: auto; margin-right: auto;">
+</p>
 
-## 4. Upload and Instantiate Chaincode
-"Smart contracts", commonly referred to as "Chaincode", can be used to execute business logic and validate incoming requests. In this context, the contracts are used to implement CRUD operations for tracking assets on the IBM Blockchain ledger.
+Next, click the ``Install code`` option on the left hand menu, and then the ``Install Chaincode`` button on the right of the page
+<p align="center">
+<img src="https://i.imgur.com/HmdDsgm.png"  data-canonical-src="https://i.imgur.com/HmdDsgm.png" width="650" height="450" style="margin-left: auto; margin-right: auto;">
+</p>
 
-To begin the process of uploading the smart contracts to the blockchain, we can start by opening the IBM Cloud dashboard, selecting your provisioned Blockchain service, and accessing the blockchain network monitor by clicking `Enter Monitor`.
+Enter an id ("simple_contract") and a version ("v1"). Then, select the ``Add Files`` button to upload the [samples.go](contracts/basic/simple_contract/samples.go), [schemas.go](contracts/basic/simple_contract/schemas.go), and [simple_contract_hyperledger.go](contracts/basic/simple_contract/simple_contract_hyperledger.go) files
 
 ![](https://i.imgur.com/J2pbo7H.png)
 
-Next, click the `Install code` option on the left hand menu, and then the `Install Chaincode` button on the right of the page.
+Finally, we'll need to Instantiate the chaincode. This can be done by opening the chaincode options menu and selecting ``Instantiate``
 
-![](https://i.imgur.com/HmdDsgm.png)
+This will present a form where arguments can be provided to the chaincodes `init` function. In this case, we'll just need to provide a json string `{"version":"1.0"}` in the Arguments section, and then click ``Submit``
+<p align="center">
+<img src="https://i.imgur.com/blo1Qx3.png"  data-canonical-src="https://i.imgur.com/blo1Qx3.png" width="450" height="450" style="margin-left: auto; margin-right: auto;">
+</p>
 
 Enter an id and a version (here we'll use "simple_contract" and "v1"). Then, select the `Add Files` button to upload the [samples.go](contracts/basic/simple_contract/samples.go), [schemas.go](contracts/basic/simple_contract/schemas.go), and [simple_contract_hyperledger.go](contracts/basic/simple_contract/simple_contract_hyperledger.go) files.
 
@@ -300,7 +308,7 @@ Filesystem | `npm run build` | The build command generates the bundle.js file in
 1. Start the app locally with `npm run dev-server`.
 
 2. To access the Monitoring UI, open the following URL in a browser: `http://localhost:8081/` </br>**Note:** If you run into an issue with the port already being used, set the `PORT` environment variable to the port you'd like to use. Note that hot reload is enabled for the webpack-dev-server. Changes that you save to the source are immediately reflected in the Monitoring UI. There is no need to manually reload.
-> Note: server host can be changed as required in server.js and `PORT` can be set in `.env`.
+> Note: server host can be changed as required in server.js and PORT can be set in `.env`.
 
 ![](https://i.imgur.com/BMbb8Oq.png)
 
